@@ -1,123 +1,200 @@
 package userent_test
 
-// const (
-// 	EMAIL_HOSTMAME = "@example.com"
-// )
+import (
+	"encoding/json"
+	userent "ifoodish-store/internal/user/domain/entity"
+	uservo "ifoodish-store/internal/user/domain/valueobject"
+	"strings"
+	"testing"
 
-// var (
-// 	validUser = userent.User{
-// 		Name:  strings.Repeat("a", uservo.MaxUserNameLength-1)),
-// 		Email: strings.Repeat("a", uservo.MaxEmailLength-len(EMAIL_HOSTMAME)) + EMAIL_HOSTMAME),
-// 	}
-// 	invalidUser1 = User{
-// 		Name:  strings.Repeat("a", uservo.MaxUserNameLength+1),
-// 		Email: strings.Repeat("a", uservo.MaxEmailLength),
-// 	}
-// 	invalidUser2 = User{
-// 		Name:  strings.Repeat("a", uservo.MaxUserNameLength)),
-// 		Email: strings.Repeat("a", uservo.MaxEmailLength+1)),
-// 	}
-// 	validRegisteredUser = RegisteredUser{
-// 		User: validUser,
-// 		ID:   50,
-// 	}
-// 	invalidRegisteredUser1 = RegisteredUser{
-// 		User: invalidUser1,
-// 		ID:   -50,
-// 	}
-// 	invalidRegisteredUser2 = RegisteredUser{
-// 		User: validUser,
-// 		ID:   -50,
-// 	}
-// )
+	"github.com/stretchr/testify/require"
+)
 
-// func TestUserValid(t *testing.T) {
-// 	require := require.New(t)
+const (
+	EMAIL_HOSTMAME = "@example.com"
+)
 
-// 	user, myError := NewUser(validUser)
-// 	require.Nil(myError)
-// 	require.NotEmpty(user)
+var (
+	validUser = userent.User{
+		Name:  "João da Silva",
+		Email: uservo.Email(strings.Repeat("a", uservo.MaxEmailLength-len(EMAIL_HOSTMAME)) + EMAIL_HOSTMAME),
+		Phone: "24999999999",
+	}
+)
 
-// }
+func TestUserValid(t *testing.T) {
+	require := require.New(t)
 
-// func TestUserInvalid(t *testing.T) {
-// 	require := require.New(t)
+	user, err := userent.NewUser(validUser)
+	require.Nil(err)
+	require.NotEmpty(user)
+}
 
-// 	user, myError := NewUser(invalidUser1)
-// 	require.NotNil(myError)
-// 	require.Nil(user)
+func TestUserInvalid(t *testing.T) {
+	require := require.New(t)
 
-// 	user, myError = NewUser(invalidUser2)
-// 	require.NotNil(myError)
-// 	require.Nil(user)
+	type testIterator struct {
+		user userent.User
+		err  error
+	}
 
-// }
+	users := []testIterator{}
 
-// func TestRegisteredUserValid(t *testing.T) {
-// 	require := require.New(t)
+	//Name
+	example := validUser
+	example.Name = uservo.UserName("João 123")
+	users = append(users, testIterator{
+		user: example,
+		err:  uservo.ErrUserNameInvalidCharacter,
+	})
 
-// 	user, myError := NewRegisteredUser(validRegisteredUser)
-// 	require.Nil(myError)
-// 	require.NotEmpty(user)
+	example = validUser
+	example.Name = uservo.UserName(strings.Repeat("a", uservo.MaxUserNameLength+1))
+	users = append(users, testIterator{
+		user: example,
+		err:  uservo.ErrUserNameMaxLength,
+	})
 
-// }
+	example = validUser
+	example.Name = uservo.UserName(strings.Repeat("a", uservo.MinUserNameLength-1))
+	users = append(users, testIterator{
+		user: example,
+		err:  uservo.ErrUserNameMinLength,
+	})
 
-// func TestRegisteredUserInvalid(t *testing.T) {
-// 	require := require.New(t)
+	//Email
+	example = validUser
+	example.Email = uservo.Email("João123")
+	users = append(users, testIterator{
+		user: example,
+		err:  uservo.ErrEmailInvalidFormat,
+	})
 
-// 	user, myError := NewRegisteredUser(invalidRegisteredUser1)
-// 	require.NotNil(myError)
-// 	require.Nil(user)
+	example = validUser
+	example.Email = uservo.Email(strings.Repeat("a", uservo.MaxEmailLength) + EMAIL_HOSTMAME)
+	users = append(users, testIterator{
+		user: example,
+		err:  uservo.ErrEmailMaxLength,
+	})
 
-// 	user, myError = NewRegisteredUser(invalidRegisteredUser2)
-// 	require.NotNil(myError)
-// 	require.Nil(user)
-// }
-// func TestJSONUnmarshallingSuccess(t *testing.T) {
-// 	require := require.New(t)
+	//Phone
+	example = validUser
+	example.Phone = uservo.Phone(strings.Repeat("9", uservo.MaxPhoneLength+1))
+	users = append(users, testIterator{
+		user: example,
+		err:  uservo.ErrPhoneMaxLength,
+	})
 
-// 	var user *User
-// 	err := json.Unmarshal([]byte(`
-// 		{
-// 			"name":"Matheus Zabin",
-// 			"email":"lalal@lala.com"
-// 		}
-// 	`), &user)
-// 	require.Nil(err)
-// 	require.True(user.Name.Equals("Matheus Zabin"))
-// 	require.True(user.Email.Equals("lalal@lala.com"))
+	example = validUser
+	example.Phone = uservo.Phone(strings.Repeat("a", uservo.MinPhoneLength-1))
+	users = append(users, testIterator{
+		user: example,
+		err:  uservo.ErrPhoneMinLength,
+	})
 
-// }
+	for _, it := range users {
+		newUser, err := userent.NewUser(it.user)
+		require.ErrorIs(err, it.err)
+		require.Nil(newUser)
+	}
 
-// func TestJSONUnmarshallingFail(t *testing.T) {
-// 	require := require.New(t)
-// 	var user *User
+}
 
-// 	// forçando teste do unmarshal
-// 	err := user.UnmarshalJSON([]byte(`
-// 		{
-// 			"name":"Matheus Zabin",
-// 			"email":"lalal@lala.com
-// 		}
-// 	`))
-// 	require.NotNil(err)
+func TestRegisteredUserValid(t *testing.T) {
+	require := require.New(t)
 
-// 	user = nil
-// 	err = json.Unmarshal([]byte(`
-// 		{
-// 			"name":"Aa",
-// 			"email":"lalal@lala.com"
-// 		}
-// 	`), &user)
-// 	require.ErrorIs(err, uservo.ErrUserNameMinLength)
+	ex := userent.RegisteredUser{}
+	ex.User = validUser
+	ex.ID = 50
 
-// 	user = nil
-// 	err = json.Unmarshal([]byte(`
-// 		{
-// 			"name":"Matheus Zabin",
-// 			"email":"emailInvalido"
-// 		}
-// 	`), &user)
-// 	require.ErrorIs(err, uservo.ErrEmailInvalidFormat)
+	user, err := userent.NewRegisteredUser(ex)
+	require.Nil(err)
+	require.NotEmpty(user)
 
-// }
+}
+
+func TestRegisteredUserInvalid(t *testing.T) {
+	require := require.New(t)
+
+	ex := userent.RegisteredUser{}
+	ex.User = validUser
+
+	ex.ID = 0
+	user, err := userent.NewRegisteredUser(ex)
+	require.ErrorIs(err, uservo.ErrInvalidUserID)
+	require.Nil(user)
+
+	ex.ID = -10
+	user, err = userent.NewRegisteredUser(ex)
+	require.ErrorIs(err, uservo.ErrInvalidUserID)
+	require.Nil(user)
+
+	ex.Name = uservo.UserName(strings.Repeat("a", uservo.MinUserNameLength-1))
+	user, err = userent.NewRegisteredUser(ex)
+	require.ErrorIs(err, uservo.ErrUserNameMinLength)
+	require.Nil(user)
+
+}
+
+func TestJSONUnmarshallingSuccess(t *testing.T) {
+	require := require.New(t)
+
+	var user *userent.User
+	err := json.Unmarshal([]byte(`
+		{
+			"name":"Matheus Zabin",
+			"email":"lalal@lala.com",
+			"phone":"24999999999"
+		}
+	`), &user)
+	require.Nil(err)
+	require.True(user.Name.Equals("Matheus Zabin"))
+	require.True(user.Email.Equals("lalal@lala.com"))
+	require.True(user.Phone.Equals("24999999999"))
+}
+
+func TestJSONUnmarshallingFail(t *testing.T) {
+	require := require.New(t)
+	var user *userent.User
+
+	// forçando teste do unmarshal
+	err := user.UnmarshalJSON([]byte(`
+		{
+			"name":"Matheus Zabin",
+			"email":"lalal@lala.com
+			"phone":"249999224073"
+		}
+	`))
+	require.NotNil(err)
+
+	user = nil
+	err = json.Unmarshal([]byte(`
+		{
+			"name":"Aa",
+			"email":"lalal@lala.com",
+			"phone":"249999224073"
+		}
+	`), &user)
+	require.ErrorIs(err, uservo.ErrUserNameMinLength)
+
+	user = nil
+	err = json.Unmarshal([]byte(`
+		{
+			"name":"Matheus Zabin",
+			"email":"emailInvalido",
+			"phone":"249999224073"
+		}
+	`), &user)
+	require.ErrorIs(err, uservo.ErrEmailInvalidFormat)
+
+	user = nil
+	err = json.Unmarshal([]byte(`
+		{
+			"name":"Matheus Zabin",
+			"email":"lalal@lala.com",
+			"phone":"249993"
+		}
+	`), &user)
+	require.ErrorIs(err, uservo.ErrPhoneMinLength)
+
+}

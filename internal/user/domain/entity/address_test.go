@@ -184,6 +184,11 @@ func TestRegisteredAddressInvalidID(t *testing.T) {
 	require.ErrorIs(err, uservo.ErrInvalidAddressID)
 	require.Nil(address)
 
+	ex.City = uservo.City(strings.Repeat("a", uservo.MinCityLength-1))
+	address, err = userent.NewRegisteredAddress(ex)
+	require.ErrorIs(err, uservo.ErrCityMinLength)
+	require.Nil(address)
+
 }
 
 func TestJSONUnmarshallingAddressSuccess(t *testing.T) {

@@ -41,6 +41,10 @@ func NewUser(params User) (newUser *User, err error) {
 	if err != nil {
 		return nil, err
 	}
+	newUser.Phone, err = uservo.NewPhone(string(params.Phone))
+	if err != nil {
+		return nil, err
+	}
 	return newUser, nil
 }
 

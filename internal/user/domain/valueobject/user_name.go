@@ -27,7 +27,7 @@ func NewUserName(value string) (UserName, error) {
 		return "", ErrUserNameMinLength
 	}
 
-	if !valid.Matches(value, `^[a-zA-Z\s]*$`) {
+	if !valid.Matches(value, `^[\p{L}\s]*$`) {
 		return "", ErrUserNameInvalidCharacter
 	}
 	return UserName(value), nil
