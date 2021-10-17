@@ -10,15 +10,15 @@ import (
 func TestNumberMaxLength(t *testing.T) {
 	require := require.New(t)
 
-	Number, myError := NewNumber(strings.Repeat("1", maxNumberLength+1))
-	require.ErrorIs(myError, ErrNumberMaxLength)
+	Number, myError := NewAddressNumber(strings.Repeat("1", MaxAddressNumberLength+1))
+	require.ErrorIs(myError, ErrAddressNumberMaxLength)
 	require.Len(Number, 0)
 }
 
 func TestValidNumber(t *testing.T) {
 	require := require.New(t)
 
-	number, myError := NewNumber(strings.Repeat("1", maxNumberLength-1))
+	number, myError := NewAddressNumber(strings.Repeat("1", MaxAddressNumberLength-1))
 	require.Nil(myError)
 	require.NotEmpty(number)
 }
@@ -26,10 +26,10 @@ func TestValidNumber(t *testing.T) {
 func TestEqualNumber(t *testing.T) {
 	require := require.New(t)
 
-	number, myError := NewNumber(strings.Repeat("1", maxNumberLength-1))
+	number, myError := NewAddressNumber(strings.Repeat("1", MaxAddressNumberLength-1))
 	require.Nil(myError)
 
-	number2, myError2 := NewNumber(strings.Repeat("1", maxNumberLength-1))
+	number2, myError2 := NewAddressNumber(strings.Repeat("1", MaxAddressNumberLength-1))
 	require.Nil(myError2)
 
 	require.True(number.Equals(number2))
@@ -39,13 +39,13 @@ func TestEqualNumber(t *testing.T) {
 func TestNotEqualNumber(t *testing.T) {
 	require := require.New(t)
 
-	number, myError := NewNumber(strings.Repeat("1", maxNumberLength-1))
+	number, myError := NewAddressNumber(strings.Repeat("1", MaxAddressNumberLength-1))
 	require.Nil(myError)
 
-	number2, myError2 := NewNumber(strings.Repeat("2", maxNumberLength-1))
+	number2, myError2 := NewAddressNumber(strings.Repeat("2", MaxAddressNumberLength-1))
 	require.Nil(myError2)
 
-	number3, myError3 := NewNumber(strings.Repeat("1", maxNumberLength))
+	number3, myError3 := NewAddressNumber(strings.Repeat("1", MaxAddressNumberLength))
 	require.Nil(myError3)
 
 	require.False(number.Equals(number3))

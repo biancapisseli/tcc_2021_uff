@@ -2,7 +2,7 @@ package userent
 
 import (
 	"encoding/json"
-	uservo "ifoodish-store/internal/domain/valueobject"
+	uservo "ifoodish-store/internal/user/domain/valueobject"
 )
 
 type RegisteredAddress struct {
@@ -59,7 +59,7 @@ func NewAddress(address Address) (newAddress *Address, err error) {
 	if err != nil {
 		return nil, err
 	}
-	newAddress.Number, err = uservo.NewNumber(string(address.Number))
+	newAddress.Number, err = uservo.NewAddressNumber(string(address.Number))
 	if err != nil {
 		return nil, err
 	}

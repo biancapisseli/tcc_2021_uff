@@ -7,12 +7,12 @@ import (
 )
 
 const (
-	zipcodeLength = 8
+	ZipcodeLength = 8
 )
 
 var (
-	ErrZipcodeLength     = fmt.Errorf("o CEP deve possuir %d digitos", zipcodeLength)
-	ErrZipcodeCharacters = fmt.Errorf("o CEP deve possuir apenas numeros")
+	ErrZipcodeLength     = fmt.Errorf("o CEP deve possuir %d digitos", ZipcodeLength)
+	ErrZipcodeNotNumeric = fmt.Errorf("o CEP deve possuir apenas numeros")
 )
 
 type Zipcode string
@@ -26,11 +26,11 @@ func (s Zipcode) String() string {
 }
 
 func NewZipcode(value string) (Zipcode, error) {
-	if len(value) != zipcodeLength {
+	if len(value) != ZipcodeLength {
 		return "", ErrZipcodeLength
 	}
 	if !valid.IsNumeric(value) {
-		return "", ErrZipcodeCharacters
+		return "", ErrZipcodeNotNumeric
 	}
 	return Zipcode(value), nil
 }

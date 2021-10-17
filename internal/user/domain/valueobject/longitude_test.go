@@ -17,11 +17,11 @@ func TestLongitudeInvalid(t *testing.T) {
 	require := require.New(t)
 
 	longitude, myError := NewLongitude(invalidLongitude)
-	require.ErrorIs(myError, ErrLongitudeFormat)
+	require.ErrorIs(myError, ErrLongitudeInvalidFormat)
 	require.Len(longitude, 0)
 
 	longitude2, myError := NewLongitude(invalidLongitude)
-	require.ErrorIs(myError, ErrLongitudeFormat)
+	require.ErrorIs(myError, ErrLongitudeInvalidFormat)
 	require.Len(longitude2, 0)
 
 }

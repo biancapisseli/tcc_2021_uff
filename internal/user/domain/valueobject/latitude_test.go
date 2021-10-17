@@ -17,11 +17,11 @@ func TestLatitudePattern(t *testing.T) {
 	require := require.New(t)
 
 	latitude, myError := NewLatitude(invalidLatitude)
-	require.ErrorIs(myError, ErrLatitudeFormat)
+	require.ErrorIs(myError, ErrLatitudeInvalidFormat)
 	require.Len(latitude, 0)
 
 	latitude2, myError := NewLatitude(invalidLatitude2)
-	require.ErrorIs(myError, ErrLatitudeFormat)
+	require.ErrorIs(myError, ErrLatitudeInvalidFormat)
 	require.Len(latitude2, 0)
 
 }

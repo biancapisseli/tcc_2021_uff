@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	ErrLongitudeFormat = fmt.Errorf("longitude inválida")
+	ErrLongitudeInvalidFormat = fmt.Errorf("longitude em formato inválido")
 )
 
 type Longitude string
@@ -22,7 +22,7 @@ func (s Longitude) String() string {
 
 func NewLongitude(value string) (Longitude, error) {
 	if !valid.IsLongitude(value) {
-		return "", ErrLongitudeFormat
+		return "", ErrLongitudeInvalidFormat
 	}
 	return Longitude(value), nil
 

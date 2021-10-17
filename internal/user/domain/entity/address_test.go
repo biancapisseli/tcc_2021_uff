@@ -1,17 +1,18 @@
-package userent
+package userent_test
 
 import (
 	"encoding/json"
 	"strings"
 	"testing"
 
-	uservo "ifoodish-store/internal/domain/valueobject"
+	userent "ifoodish-store/internal/user/domain/entity"
+	uservo "ifoodish-store/internal/user/domain/valueobject"
 
 	"github.com/stretchr/testify/require"
 )
 
 var (
-	validAddress = Address{
+	validAddress = userent.Address{
 		Street:     "Street ABCD",
 		District:   "Espirito Santo",
 		City:       "Jose dos Campos",
@@ -22,182 +23,165 @@ var (
 		Latitude:   "-23.307577",
 		Longitude:  "-44.754146",
 	}
-	invalidAddress1 = Address{
-		Street:     uservo.Street(strings.Repeat("a", minStreetLength-1)),
-		District:   uservo.District(strings.Repeat("a", minDistrictLength-1)),
-		City:       uservo.City(strings.Repeat("a", maxCityLength+1)),
-		State:      uservo.State((strings.Repeat("a", maxStateLength+1))),
-		Complement: uservo.Complement((strings.Repeat("a", maxComplementLength+1))),
-		Number:     uservo.Number((strings.Repeat("1", maxNumberLength+1))),
-		Zipcode:    uservo.Zipcode((strings.Repeat("1", zipcodeLength+1))),
-		Latitude:   uservo.Latitude((strings.Repeat("1", 5))),
-		Longitude:  uservo.Longitude((strings.Repeat("1", 5))),
-	}
-	invalidAddress2 = Address{
-		Street:     "Street ABCD",
-		District:   uservo.District(strings.Repeat("a", minDistrictLength-1)),
-		City:       uservo.City(strings.Repeat("a", maxCityLength+1)),
-		State:      uservo.State((strings.Repeat("a", maxStateLength+1))),
-		Complement: uservo.Complement((strings.Repeat("a", maxComplementLength+1))),
-		Number:     uservo.Number((strings.Repeat("1", maxNumberLength+1))),
-		Zipcode:    uservo.Zipcode((strings.Repeat("1", zipcodeLength+1))),
-		Latitude:   uservo.Latitude((strings.Repeat("1", 5))),
-		Longitude:  uservo.Longitude((strings.Repeat("1", 5))),
-	}
-	invalidAddress3 = Address{
-		Street:     "Street ABCD",
-		District:   "District",
-		City:       uservo.City(strings.Repeat("a", maxCityLength+1)),
-		State:      uservo.State((strings.Repeat("a", maxStateLength+1))),
-		Complement: uservo.Complement((strings.Repeat("a", maxComplementLength+1))),
-		Number:     uservo.Number((strings.Repeat("1", maxNumberLength+1))),
-		Zipcode:    uservo.Zipcode((strings.Repeat("1", zipcodeLength+1))),
-		Latitude:   uservo.Latitude((strings.Repeat("1", 5))),
-		Longitude:  uservo.Longitude((strings.Repeat("1", 5))),
-	}
-	invalidAddress4 = Address{
-		Street:     "Street ABCD",
-		District:   "District",
-		City:       "City",
-		State:      uservo.State((strings.Repeat("a", maxStateLength+1))),
-		Complement: uservo.Complement((strings.Repeat("a", maxComplementLength+1))),
-		Number:     uservo.Number((strings.Repeat("1", maxNumberLength+1))),
-		Zipcode:    uservo.Zipcode((strings.Repeat("1", zipcodeLength+1))),
-		Latitude:   uservo.Latitude((strings.Repeat("1", 5))),
-		Longitude:  uservo.Longitude((strings.Repeat("1", 5))),
-	}
-	invalidAddress5 = Address{
-		Street:     "Street ABCD",
-		District:   "District",
-		City:       "City",
-		State:      "State",
-		Complement: uservo.Complement((strings.Repeat("a", maxComplementLength+1))),
-		Number:     uservo.Number((strings.Repeat("1", maxNumberLength+1))),
-		Zipcode:    uservo.Zipcode((strings.Repeat("1", zipcodeLength+1))),
-		Latitude:   uservo.Latitude((strings.Repeat("1", 5))),
-		Longitude:  uservo.Longitude((strings.Repeat("1", 5))),
-	}
-	invalidAddress6 = Address{
-		Street:     "Street ABCD",
-		District:   "District",
-		City:       "City",
-		State:      "State",
-		Complement: "Complement",
-		Number:     uservo.Number((strings.Repeat("1", maxNumberLength+1))),
-		Zipcode:    uservo.Zipcode((strings.Repeat("1", zipcodeLength+1))),
-		Latitude:   uservo.Latitude((strings.Repeat("1", 5))),
-		Longitude:  uservo.Longitude((strings.Repeat("1", 5))),
-	}
-	invalidAddress7 = Address{
-		Street:     "Street ABCD",
-		District:   "District",
-		City:       "City",
-		State:      "State",
-		Complement: "Complement",
-		Number:     "11111",
-		Zipcode:    uservo.Zipcode((strings.Repeat("1", zipcodeLength+1))),
-		Latitude:   uservo.Latitude((strings.Repeat("1", 5))),
-		Longitude:  uservo.Longitude((strings.Repeat("1", 5))),
-	}
-	invalidAddress8 = Address{
-		Street:     "Street ABCD",
-		District:   "District",
-		City:       "City",
-		State:      "State",
-		Complement: "Complement",
-		Number:     "11111",
-		Zipcode:    "23970000",
-		Latitude:   uservo.Latitude((strings.Repeat("1", 5))),
-		Longitude:  uservo.Longitude((strings.Repeat("1", 5))),
-	}
-	invalidAddress9 = Address{
-		Street:     "Street ABCD",
-		District:   "District",
-		City:       "City",
-		State:      "State",
-		Complement: "Complement",
-		Number:     "11111",
-		Zipcode:    "23970000",
-		Latitude:   "-23.307577",
-		Longitude:  uservo.Longitude((strings.Repeat("1", 5))),
-	}
-	validRegisteredAddress = RegisteredAddress{
-		Address: validAddress,
-		ID:      50,
-	}
-	invalidRegisteredAddress1 = RegisteredAddress{
-		Address: invalidAddress1,
-		ID:      -1,
-	}
-	invalidRegisteredAddress2 = RegisteredAddress{
-		Address: validAddress,
-		ID:      -1,
-	}
 )
 
 func TestAddressValid(t *testing.T) {
 	require := require.New(t)
-	address, myError := NewAddress(validAddress)
-	require.Nil(myError)
+	address, err := userent.NewAddress(validAddress)
+	require.Nil(err)
 	require.NotEmpty(address)
 }
 
 func TestAddressInvalid(t *testing.T) {
 	require := require.New(t)
 
-	address, myError := NewAddress(invalidAddress1)
-	require.NotNil(myError)
-	require.Nil(address)
+	type testIterator struct {
+		address userent.Address
+		err     error
+	}
 
-	address, myError = NewAddress(invalidAddress2)
-	require.NotNil(myError)
-	require.Nil(address)
+	addresses := []testIterator{}
 
-	address, myError = NewAddress(invalidAddress3)
-	require.NotNil(myError)
-	require.Nil(address)
+	example := validAddress
+	example.Street = uservo.Street(strings.Repeat("a", uservo.MinStreetLength-1))
+	addresses = append(addresses, testIterator{
+		address: example,
+		err:     uservo.ErrStreetMinLength,
+	})
 
-	address, myError = NewAddress(invalidAddress4)
-	require.NotNil(myError)
-	require.Nil(address)
+	example = validAddress
+	example.Street = uservo.Street(strings.Repeat("a", uservo.MaxStreetLength+1))
+	addresses = append(addresses, testIterator{
+		address: example,
+		err:     uservo.ErrStreetMaxLength,
+	})
 
-	address, myError = NewAddress(invalidAddress5)
-	require.NotNil(myError)
-	require.Nil(address)
+	// District
+	example = validAddress
+	example.District = uservo.District(strings.Repeat("a", uservo.MinDistrictLength-1))
+	addresses = append(addresses, testIterator{
+		address: example,
+		err:     uservo.ErrDistrictMinLength,
+	})
 
-	address, myError = NewAddress(invalidAddress6)
-	require.NotNil(myError)
-	require.Nil(address)
+	example = validAddress
+	example.District = uservo.District(strings.Repeat("a", uservo.MaxDistrictLength+1))
+	addresses = append(addresses, testIterator{
+		address: example,
+		err:     uservo.ErrDistrictMaxLength,
+	})
+	// City
+	example = validAddress
+	example.City = uservo.City(strings.Repeat("a", uservo.MinCityLength-1))
+	addresses = append(addresses, testIterator{
+		address: example,
+		err:     uservo.ErrCityMinLength,
+	})
 
-	address, myError = NewAddress(invalidAddress7)
-	require.NotNil(myError)
-	require.Nil(address)
+	example = validAddress
+	example.City = uservo.City(strings.Repeat("a", uservo.MaxCityLength+1))
+	addresses = append(addresses, testIterator{
+		address: example,
+		err:     uservo.ErrCityMaxLength,
+	})
+	// State
+	example = validAddress
+	example.State = uservo.State(strings.Repeat("a", uservo.MinStateLength-1))
+	addresses = append(addresses, testIterator{
+		address: example,
+		err:     uservo.ErrStateMinLength,
+	})
 
-	address, myError = NewAddress(invalidAddress8)
-	require.NotNil(myError)
-	require.Nil(address)
+	example = validAddress
+	example.State = uservo.State(strings.Repeat("a", uservo.MaxStateLength+1))
+	addresses = append(addresses, testIterator{
+		address: example,
+		err:     uservo.ErrStateMaxLength,
+	})
+	// Complement
+	example = validAddress
+	example.Complement = uservo.Complement(strings.Repeat("a", uservo.MaxComplementLength+1))
+	addresses = append(addresses, testIterator{
+		address: example,
+		err:     uservo.ErrComplementMaxLength,
+	})
+	// Number
+	example = validAddress
+	example.Number = uservo.Number(strings.Repeat("a", uservo.MinAddressNumberLength-1))
+	addresses = append(addresses, testIterator{
+		address: example,
+		err:     uservo.ErrAddressNumberMinLength,
+	})
 
-	address, myError = NewAddress(invalidAddress9)
-	require.NotNil(myError)
-	require.Nil(address)
+	example = validAddress
+	example.Number = uservo.Number(strings.Repeat("a", uservo.MaxAddressNumberLength+1))
+	addresses = append(addresses, testIterator{
+		address: example,
+		err:     uservo.ErrAddressNumberMaxLength,
+	})
+	// Zipcode
+	example = validAddress
+	example.Zipcode = uservo.Zipcode(strings.Repeat("1", uservo.ZipcodeLength+1))
+	addresses = append(addresses, testIterator{
+		address: example,
+		err:     uservo.ErrZipcodeLength,
+	})
+	example = validAddress
+	example.Zipcode = uservo.Zipcode(strings.Repeat("a", uservo.ZipcodeLength))
+	addresses = append(addresses, testIterator{
+		address: example,
+		err:     uservo.ErrZipcodeNotNumeric,
+	})
+
+	// Latitude
+	example = validAddress
+	example.Latitude = uservo.Latitude(strings.Repeat("a", 5))
+	addresses = append(addresses, testIterator{
+		address: example,
+		err:     uservo.ErrLatitudeInvalidFormat,
+	})
+
+	// Longitude
+	example = validAddress
+	example.Longitude = uservo.Longitude(strings.Repeat("a", 5))
+	addresses = append(addresses, testIterator{
+		address: example,
+		err:     uservo.ErrLongitudeInvalidFormat,
+	})
+
+	for _, it := range addresses {
+		newAddress, err := userent.NewAddress(it.address)
+		require.ErrorIs(err, it.err)
+		require.Nil(newAddress)
+	}
+
 }
 
 func TestRegisteredAddressValid(t *testing.T) {
 	require := require.New(t)
-	address, myError := NewRegisteredAddress(validRegisteredAddress)
-	require.Nil(myError)
+
+	ex := userent.RegisteredAddress{}
+	ex.Address = validAddress
+	ex.ID = 50
+
+	address, err := userent.NewRegisteredAddress(ex)
+	require.Nil(err)
 	require.NotEmpty(address)
 }
 
-func TestRegisteredAddressInvalid(t *testing.T) {
+func TestRegisteredAddressInvalidID(t *testing.T) {
 	require := require.New(t)
 
-	address, myError := NewRegisteredAddress(invalidRegisteredAddress1)
-	require.NotNil(myError)
+	ex := userent.RegisteredAddress{}
+	ex.Address = validAddress
+	ex.ID = 0
+	address, err := userent.NewRegisteredAddress(ex)
+	require.ErrorIs(err, uservo.ErrInvalidAddressID)
 	require.Nil(address)
 
-	address, myError = NewRegisteredAddress(invalidRegisteredAddress2)
-	require.NotNil(myError)
+	ex.ID = -10
+	address, err = userent.NewRegisteredAddress(ex)
+	require.ErrorIs(err, uservo.ErrInvalidAddressID)
 	require.Nil(address)
 
 }
@@ -205,7 +189,7 @@ func TestRegisteredAddressInvalid(t *testing.T) {
 func TestJSONUnmarshallingAddressSuccess(t *testing.T) {
 	require := require.New(t)
 
-	var address *Address
+	var address *userent.Address
 	err := json.Unmarshal([]byte(`
 	{
 		"Street":     "Street ABCD",
@@ -233,7 +217,7 @@ func TestJSONUnmarshallingAddressSuccess(t *testing.T) {
 
 func TestJSONUnmarshallingAddressFail(t *testing.T) {
 	require := require.New(t)
-	var address *Address
+	var address *userent.Address
 
 	// forçando teste do unmarshal
 	err := address.UnmarshalJSON([]byte(`
@@ -265,6 +249,6 @@ func TestJSONUnmarshallingAddressFail(t *testing.T) {
 		"Longitude":  "-44.754146"
 	}
 	`), &address)
-	require.ErrorIs(err, ErrStreetMinLength)
+	require.ErrorIs(err, uservo.ErrStreetMinLength)
 
 }

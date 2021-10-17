@@ -10,7 +10,7 @@ import (
 func TestStateMaxLength(t *testing.T) {
 	require := require.New(t)
 
-	state, myError := NewState(strings.Repeat("a", maxStateLength+1))
+	state, myError := NewState(strings.Repeat("a", MaxStateLength+1))
 	require.ErrorIs(myError, ErrStateMaxLength)
 	require.Len(state, 0)
 }
@@ -18,7 +18,7 @@ func TestStateMaxLength(t *testing.T) {
 func TestValidState(t *testing.T) {
 	require := require.New(t)
 
-	state, myError := NewState(strings.Repeat("a", maxStateLength-1))
+	state, myError := NewState(strings.Repeat("a", MaxStateLength-1))
 	require.Nil(myError)
 	require.NotEmpty(state)
 }
@@ -26,10 +26,10 @@ func TestValidState(t *testing.T) {
 func TestEqualState(t *testing.T) {
 	require := require.New(t)
 
-	state, myError := NewState(strings.Repeat("a", maxStateLength-1))
+	state, myError := NewState(strings.Repeat("a", MaxStateLength-1))
 	require.Nil(myError)
 
-	state2, myError2 := NewState(strings.Repeat("a", maxStateLength-1))
+	state2, myError2 := NewState(strings.Repeat("a", MaxStateLength-1))
 	require.Nil(myError2)
 
 	require.True(state.Equals(state2))
@@ -39,13 +39,13 @@ func TestEqualState(t *testing.T) {
 func TestNotEqualState(t *testing.T) {
 	require := require.New(t)
 
-	state, myError := NewState(strings.Repeat("a", maxStateLength-1))
+	state, myError := NewState(strings.Repeat("a", MaxStateLength-1))
 	require.Nil(myError)
 
-	state2, myError2 := NewState(strings.Repeat("a", maxStateLength-2))
+	state2, myError2 := NewState(strings.Repeat("a", MaxStateLength-2))
 	require.Nil(myError2)
 
-	state3, myError3 := NewState(strings.Repeat("b", maxStateLength-1))
+	state3, myError3 := NewState(strings.Repeat("b", MaxStateLength-1))
 	require.Nil(myError3)
 
 	require.False(state.Equals(state2))

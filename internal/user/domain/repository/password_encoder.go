@@ -1,7 +1,7 @@
 package userrepo
 
 import (
-	uservo "ifoodish-store/internal/domain/valueobject"
+	uservo "ifoodish-store/internal/user/domain/valueobject"
 )
 
 type PasswordEncoder interface {

@@ -3,11 +3,11 @@ package uservo
 import "fmt"
 
 const (
-	maxComplementLength = 300
+	MaxComplementLength = 300
 )
 
 var (
-	ErrComplementMaxLength = fmt.Errorf("o complemento deve possuir menos que %d caracteres", maxComplementLength)
+	ErrComplementMaxLength = fmt.Errorf("o complemento deve possuir no máximo %d caracteres", MaxComplementLength)
 )
 
 type Complement string
@@ -21,7 +21,7 @@ func (s Complement) String() string {
 }
 
 func NewComplement(value string) (Complement, error) {
-	if len(value) > maxComplementLength {
+	if len(value) > MaxComplementLength {
 		return "", ErrComplementMaxLength
 	}
 	return Complement(value), nil

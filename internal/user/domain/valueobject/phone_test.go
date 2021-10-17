@@ -10,7 +10,7 @@ import (
 func TestPhoneMaxLength(t *testing.T) {
 	require := require.New(t)
 
-	Phone, myError := NewPhone(strings.Repeat("1", maxPhoneLength+1))
+	Phone, myError := NewPhone(strings.Repeat("1", MaxPhoneLength+1))
 	require.ErrorIs(myError, ErrPhoneMaxLength)
 	require.Len(Phone, 0)
 }
@@ -18,7 +18,7 @@ func TestPhoneMaxLength(t *testing.T) {
 func TestPhoneMinLength(t *testing.T) {
 	require := require.New(t)
 
-	Phone, myError := NewPhone(strings.Repeat("1", minPhoneLength-1))
+	Phone, myError := NewPhone(strings.Repeat("1", MinPhoneLength-1))
 	require.ErrorIs(myError, ErrPhoneMinLength)
 	require.Len(Phone, 0)
 }

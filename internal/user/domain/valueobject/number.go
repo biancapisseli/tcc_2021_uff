@@ -3,11 +3,13 @@ package uservo
 import "fmt"
 
 const (
-	maxNumberLength = 10
+	MaxAddressNumberLength = 10
+	MinAddressNumberLength = 1
 )
 
 var (
-	ErrNumberMaxLength = fmt.Errorf("o número deve possuir menos que %d caracteres", maxNumberLength)
+	ErrAddressNumberMaxLength = fmt.Errorf("o número deve possuir no máximo %d caracteres", MaxAddressNumberLength)
+	ErrAddressNumberMinLength = fmt.Errorf("o número deve possuir no mínimo %d caracteres", MinAddressNumberLength)
 )
 
 type Number string
@@ -20,9 +22,13 @@ func (s Number) String() string {
 	return string(s)
 }
 
-func NewNumber(value string) (Number, error) {
-	if len(value) > maxNumberLength {
-		return "", ErrNumberMaxLength
+func NewAddressNumber(value string) (Number, error) {
+	if len(value) > MaxAddressNumberLength {
+		return "", ErrAddressNumberMaxLength
 	}
+	if len(value) < MinAddressNumberLength {
+		return "", ErrAddressNumberMinLength
+	}
+
 	return Number(value), nil
 }

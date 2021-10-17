@@ -3,13 +3,13 @@ package uservo
 import "fmt"
 
 const (
-	maxStreetLength = 50
-	minStreetLength = 5
+	MaxStreetLength = 50
+	MinStreetLength = 5
 )
 
 var (
-	ErrStreetMaxLength = fmt.Errorf("a rua deve possuir menos que %d caracteres", maxStreetLength)
-	ErrStreetMinLength = fmt.Errorf("a rua deve possuir mais que %d caracteres", minStreetLength)
+	ErrStreetMaxLength = fmt.Errorf("a rua deve possuir no máximo %d caracteres", MaxStreetLength)
+	ErrStreetMinLength = fmt.Errorf("a rua deve possuir mais que %d caracteres", MinStreetLength)
 )
 
 type Street string
@@ -23,10 +23,10 @@ func (s Street) String() string {
 }
 
 func NewStreet(value string) (Street, error) {
-	if len(value) > maxStreetLength {
+	if len(value) > MaxStreetLength {
 		return "", ErrStreetMaxLength
 	}
-	if len(value) < minStreetLength {
+	if len(value) < MinStreetLength {
 		return "", ErrStreetMinLength
 	}
 	return Street(value), nil

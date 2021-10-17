@@ -7,18 +7,18 @@ import (
 )
 
 const (
-	maxEmailLength = 50
+	MaxEmailLength = 50
 )
 
 var (
-	ErrEmailMaxLength     = fmt.Errorf("email deve possuir menos de %d caracteres", maxEmailLength)
+	ErrEmailMaxLength     = fmt.Errorf("email deve possuir menos de %d caracteres", MaxEmailLength)
 	ErrEmailInvalidFormat = fmt.Errorf("utilize o padrão para email: example@mail.com")
 )
 
 type Email string
 
 func NewEmail(value string) (Email, error) {
-	if len(value) > maxEmailLength {
+	if len(value) > MaxEmailLength {
 		return "", ErrEmailMaxLength
 	}
 	if !valid.IsEmail(value) {

@@ -3,13 +3,13 @@ package uservo
 import "fmt"
 
 const (
-	maxDistrictLength = 50
-	minDistrictLength = 5
+	MaxDistrictLength = 50
+	MinDistrictLength = 5
 )
 
 var (
-	ErrDistrictMaxLength = fmt.Errorf("o bairro deve possuir menos que %d caracteres", maxDistrictLength)
-	ErrDistrictMinLength = fmt.Errorf("o bairro deve possuir mais que %d caracteres", minDistrictLength)
+	ErrDistrictMaxLength = fmt.Errorf("o bairro deve possuir no máximo %d caracteres", MaxDistrictLength)
+	ErrDistrictMinLength = fmt.Errorf("o bairro deve possuir mais que %d caracteres", MinDistrictLength)
 )
 
 type District string
@@ -23,10 +23,10 @@ func (s District) String() string {
 }
 
 func NewDistrict(value string) (District, error) {
-	if len(value) > maxDistrictLength {
+	if len(value) > MaxDistrictLength {
 		return "", ErrDistrictMaxLength
 	}
-	if len(value) < minDistrictLength {
+	if len(value) < MinDistrictLength {
 		return "", ErrDistrictMinLength
 	}
 	return District(value), nil

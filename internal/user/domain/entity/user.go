@@ -2,7 +2,7 @@ package userent
 
 import (
 	"encoding/json"
-	uservo "ifoodish-store/internal/domain/valueobject"
+	uservo "ifoodish-store/internal/user/domain/valueobject"
 )
 
 type RegisteredUser struct {
@@ -13,6 +13,7 @@ type RegisteredUser struct {
 type User struct {
 	Name  uservo.UserName `json:"name"`
 	Email uservo.Email    `json:"email"`
+	Phone uservo.Phone    `json:"phone"`
 }
 
 func NewRegisteredUser(params RegisteredUser) (newUser *RegisteredUser, err error) {
@@ -52,7 +53,7 @@ func (u *User) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	newUser, err := uservo.NewUser(uservo.User(userClone))
+	newUser, err := NewUser(User(userClone))
 	if err != nil {
 		return err
 	}

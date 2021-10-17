@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	ErrLatitudeFormat = fmt.Errorf("latitude inválida")
+	ErrLatitudeInvalidFormat = fmt.Errorf("latitude inválida")
 )
 
 type Latitude string
@@ -22,7 +22,7 @@ func (s Latitude) String() string {
 
 func NewLatitude(value string) (Latitude, error) {
 	if !valid.IsLatitude(value) {
-		return "", ErrLatitudeFormat
+		return "", ErrLatitudeInvalidFormat
 	}
 	return Latitude(value), nil
 

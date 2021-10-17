@@ -3,13 +3,13 @@ package uservo
 import "fmt"
 
 const (
-	maxPhoneLength = 11
-	minPhoneLength = 10
+	MaxPhoneLength = 11
+	MinPhoneLength = 10
 )
 
 var (
-	ErrPhoneMaxLength = fmt.Errorf("o telefone deve possuir menos que %d caracteres", maxPhoneLength)
-	ErrPhoneMinLength = fmt.Errorf("o telefone deve possuir mais que %d caracteres", minPhoneLength)
+	ErrPhoneMaxLength = fmt.Errorf("o telefone deve possuir no máximo %d caracteres", MaxPhoneLength)
+	ErrPhoneMinLength = fmt.Errorf("o telefone deve possuir mais que %d caracteres", MinPhoneLength)
 )
 
 type Phone string
@@ -23,10 +23,10 @@ func (p Phone) String() string {
 }
 
 func NewPhone(value string) (Phone, error) {
-	if len(value) > maxPhoneLength {
+	if len(value) > MaxPhoneLength {
 		return "", ErrPhoneMaxLength
 	}
-	if len(value) < minPhoneLength {
+	if len(value) < MinPhoneLength {
 		return "", ErrPhoneMinLength
 	}
 	return Phone(value), nil

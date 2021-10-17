@@ -14,7 +14,7 @@ const (
 func TestRawPasswordMaxLength(t *testing.T) {
 	require := require.New(t)
 
-	rawPassword, myError := NewPasswordRaw(strings.Repeat("a", maxRawPasswordLength+1))
+	rawPassword, myError := NewPasswordRaw(strings.Repeat("a", MaxRawPasswordLength+1))
 	require.ErrorIs(myError, ErrRawPasswordMaxLength)
 	require.Len(rawPassword, 0)
 }
@@ -22,7 +22,7 @@ func TestRawPasswordMaxLength(t *testing.T) {
 func TestRawPasswordMinLength(t *testing.T) {
 	require := require.New(t)
 
-	rawPassword, myError := NewPasswordRaw(strings.Repeat("a", minRawPasswordLength-1))
+	rawPassword, myError := NewPasswordRaw(strings.Repeat("a", MinRawPasswordLength-1))
 	require.ErrorIs(myError, ErrRawPasswordMinLength)
 	require.Len(rawPassword, 0)
 }

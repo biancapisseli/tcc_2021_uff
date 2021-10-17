@@ -4,13 +4,15 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
+	uservo "ifoodish-store/internal/user/domain/valueobject"
 )
 
-func (s *UserService) ChangePassword(
+func (s *UserHTTPController) ChangePassword(
 	ctx context.Context,
-	userID userdom.UserID,
-	newPassword userdom.PasswordRaw,
-	newPasswordConfirm userdom.PasswordRaw,
+	userID uservo.UserID,
+	newPassword uservo.PasswordRaw,
+	newPasswordConfirm uservo.PasswordRaw,
 ) (err error) {
 	if !newPassword.Equals(newPasswordConfirm) {
 		return errors.New("as senhas não coincidem")

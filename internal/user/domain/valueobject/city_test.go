@@ -14,7 +14,7 @@ const (
 func TestCityMaxLength(t *testing.T) {
 	require := require.New(t)
 
-	city, myError := NewCity(strings.Repeat("a", maxCityLength+1))
+	city, myError := NewCity(strings.Repeat("a", MaxCityLength+1))
 	require.ErrorIs(myError, ErrCityMaxLength)
 	require.Len(city, 0)
 }
@@ -47,7 +47,7 @@ func TestNotEqualCity(t *testing.T) {
 	city, myError := NewCity(validCity)
 	require.Nil(myError)
 
-	city2, myError2 := NewCity(strings.Repeat("a", maxCityLength))
+	city2, myError2 := NewCity(strings.Repeat("a", MaxCityLength))
 	require.Nil(myError2)
 
 	require.False(city.Equals(city2))

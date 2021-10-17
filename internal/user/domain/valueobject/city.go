@@ -3,11 +3,13 @@ package uservo
 import "fmt"
 
 const (
-	maxCityLength = 50
+	MaxCityLength = 50
+	MinCityLength = 2
 )
 
 var (
-	ErrCityMaxLength = fmt.Errorf("a cidade deve possuir menos que %d caracteres", maxCityLength)
+	ErrCityMaxLength = fmt.Errorf("a cidade deve possuir no máximo %d caracteres", MaxCityLength)
+	ErrCityMinLength = fmt.Errorf("a cidade deve possuir no mínimo %d caracteres", MaxCityLength)
 )
 
 type City string
@@ -21,8 +23,11 @@ func (s City) String() string {
 }
 
 func NewCity(value string) (City, error) {
-	if len(value) > maxCityLength {
+	if len(value) > MaxCityLength {
 		return "", ErrCityMaxLength
+	}
+	if len(value) < MinCityLength {
+		return "", ErrCityMinLength
 	}
 	return City(value), nil
 }

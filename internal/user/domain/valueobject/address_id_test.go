@@ -26,7 +26,7 @@ func TestAddressIDInvalid(t *testing.T) {
 
 	id, myError := NewAddressID(invalidID)
 	require.ErrorIs(myError, ErrInvalidAddressID)
-	require.ElementsMatch(id, Invalid)
+	require.Zero(id)
 }
 
 func TestEqualAddressID(t *testing.T) {

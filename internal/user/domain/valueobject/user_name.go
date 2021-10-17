@@ -7,23 +7,23 @@ import (
 )
 
 const (
-	minUserNameLength = 3
-	maxUserNameLength = 50
+	MinUserNameLength = 3
+	MaxUserNameLength = 50
 )
 
 var (
-	ErrUserNameMinLength        = fmt.Errorf("nome de usuário deve possui mais de %d caracteres", minUserNameLength)
-	ErrUserNameMaxLength        = fmt.Errorf("nome de usuário deve possui menos de %d caracteres", maxUserNameLength)
+	ErrUserNameMinLength        = fmt.Errorf("nome de usuário deve possui mais de %d caracteres", MinUserNameLength)
+	ErrUserNameMaxLength        = fmt.Errorf("nome de usuário deve possui menos de %d caracteres", MaxUserNameLength)
 	ErrUserNameInvalidCharacter = fmt.Errorf("nome de usuário deve conter apenas letras e espaços")
 )
 
 type UserName string
 
 func NewUserName(value string) (UserName, error) {
-	if len(value) > maxUserNameLength {
+	if len(value) > MaxUserNameLength {
 		return "", ErrUserNameMaxLength
 	}
-	if len(value) < minUserNameLength {
+	if len(value) < MinUserNameLength {
 		return "", ErrUserNameMinLength
 	}
 
