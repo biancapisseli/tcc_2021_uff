@@ -2,13 +2,14 @@ package usersvc
 
 import (
 	"context"
-	userent "ifoodish-store/internal/domain/entity"
+	userent "ifoodish-store/internal/user/domain/entity"
+	uservo "ifoodish-store/internal/user/domain/valueobject"
 )
 
 func (s UserService) GetAddress(
 	ctx context.Context,
-	userID userent.UserID,
-	addressID userent.AddressID,
+	userID uservo.UserID,
+	addressID uservo.AddressID,
 ) (address *userent.RegisteredAddress, err error) {
 	return s.repo.GetUserAddress(ctx, userID, addressID)
 }

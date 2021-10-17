@@ -2,10 +2,10 @@ package userhttpctl
 
 import (
 	"context"
-	userent "ifoodish-store/internal/domain/valueobject"
+	userent "ifoodish-store/internal/user/domain/entity"
 )
 
-func (r UserHTTPController) UpdateInfo(
+func (c UserHTTPController) UpdateInfo(
 	ctx context.Context,
 	user *userent.RegisteredUser,
 ) (err error) {

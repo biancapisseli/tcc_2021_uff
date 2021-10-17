@@ -1,7 +1,7 @@
 package userhttpctl
 
 import (
-	userrepo "ifoodish-store/internal/domain/repository"
+	userrepo "ifoodish-store/internal/user/domain/repository"
 )
 
 type UserHTTPController struct {

@@ -2,7 +2,7 @@ package userrepo
 
 import (
 	"context"
-	userent "ifoodish-store/internal/domain/valueobject"
+	userent "ifoodish-store/internal/user/domain/entity"
 	uservo "ifoodish-store/internal/user/domain/valueobject"
 )
 
@@ -17,7 +17,7 @@ type UserRepository interface {
 
 	GetUserAddress(ctx context.Context, userID uservo.UserID, addresID uservo.AddressID) (address *userent.RegisteredAddress, err error)
 	GetUserAddresses(ctx context.Context, userID uservo.UserID) (adresses []*userent.RegisteredAddress, err error)
-	AddUserAddress(ctx context.Context, userID uservo.UserID, address *uservo.Address) (addresID uservo.AddressID, err error)
+	AddUserAddress(ctx context.Context, userID uservo.UserID, address *userent.Address) (addresID uservo.AddressID, err error)
 	SaveUserAddress(ctx context.Context, userID uservo.UserID, address *userent.RegisteredAddress) (err error)
 	RemoveUserAddress(ctx context.Context, userID uservo.UserID, addresID uservo.AddressID) (err error)
 }

@@ -1,15 +1,15 @@
 package usersvc
 
 import (
-	userent "ifoodish-store/internal/domain/entity"
+	userrepo "ifoodish-store/internal/user/domain/repository"
 )
 
 type UserService struct {
-	repo            userent.UserRepository
-	passwordEncoder userent.PasswordEncoder
+	repo            userrepo.UserRepository
+	passwordEncoder userrepo.PasswordEncoder
 }
 
-func New(repo userent.UserRepository, passwordEncoder userent.PasswordEncoder) *UserService {
+func New(repo userrepo.UserRepository, passwordEncoder userrepo.PasswordEncoder) *UserService {
 	return &UserService{
 		repo:            repo,
 		passwordEncoder: passwordEncoder,

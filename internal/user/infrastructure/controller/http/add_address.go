@@ -2,7 +2,7 @@ package userhttpctl
 
 import (
 	"context"
-	userent "ifoodish-store/internal/domain/valueobject"
+	userent "ifoodish-store/internal/user/domain/entity"
 	uservo "ifoodish-store/internal/user/domain/valueobject"
 )
 

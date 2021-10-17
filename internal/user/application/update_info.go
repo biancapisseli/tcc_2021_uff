@@ -2,7 +2,7 @@ package usersvc
 
 import (
 	"context"
-	userent "ifoodish-store/internal/domain/entity"
+	userent "ifoodish-store/internal/user/domain/entity"
 )
 
 func (s *UserService) UpdateInfo(

@@ -4,15 +4,16 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	userent "ifoodish-store/internal/domain/entity"
+
+	uservo "ifoodish-store/internal/user/domain/valueobject"
 )
 
 func (s *UserService) ChangePassword(
 	ctx context.Context,
-	userID userent.UserID,
-	currentPassword userent.PasswordRaw,
-	newPassword userent.PasswordRaw,
-	newPasswordConfirm userent.PasswordRaw,
+	userID uservo.UserID,
+	currentPassword uservo.PasswordRaw,
+	newPassword uservo.PasswordRaw,
+	newPasswordConfirm uservo.PasswordRaw,
 ) (err error) {
 
 	if !newPassword.Equals(newPasswordConfirm) {

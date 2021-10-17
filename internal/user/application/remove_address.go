@@ -2,13 +2,13 @@ package usersvc
 
 import (
 	"context"
-	userent "ifoodish-store/internal/domain/entity"
+	uservo "ifoodish-store/internal/user/domain/valueobject"
 )
 
 func (s UserService) RemoveAddress(
 	ctx context.Context,
-	userID userent.UserID,
-	addressID userent.AddressID,
+	userID uservo.UserID,
+	addressID uservo.AddressID,
 ) (err error) {
 	return s.repo.RemoveUserAddress(ctx, userID, addressID)
 }
