@@ -2,6 +2,7 @@ package usersvc
 
 import (
 	"context"
+	"fmt"
 	userent "ifoodish-store/internal/user/domain/entity"
 	uservo "ifoodish-store/internal/user/domain/valueobject"
 )
@@ -11,5 +12,9 @@ func (s UserService) AddAddress(
 	userID uservo.UserID,
 	address *userent.Address,
 ) (addressID uservo.AddressID, err error) {
-	return s.repo.AddUserAddress(ctx, userID, address)
+	addressID, err = s.repo.AddUserAddress(ctx, userID, address)
+	if err != nil {
+		return addressID, fmt.Errorf("error adding new user address: %w", err)
+	}
+	return addressID, nil
 }
