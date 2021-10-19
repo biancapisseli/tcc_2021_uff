@@ -1,6 +1,11 @@
 package uservo
 
-import "fmt"
+import (
+	"errors"
+	"ifoodish-store/pkg/resperr"
+	"net/http"
+	"strconv"
+)
 
 const (
 	MaxDistrictLength = 50
@@ -8,8 +13,8 @@ const (
 )
 
 var (
-	ErrDistrictMaxLength = fmt.Errorf("o bairro deve possuir no máximo %d caracteres", MaxDistrictLength)
-	ErrDistrictMinLength = fmt.Errorf("o bairro deve possuir mais que %d caracteres", MinDistrictLength)
+	ErrDistrictMaxLength = errors.New("district should have < " + strconv.Itoa(MaxDistrictLength) + " characteres")
+	ErrDistrictMinLength = errors.New("district should have > " + strconv.Itoa(MinDistrictLength) + " characteres")
 )
 
 type District string
@@ -24,10 +29,18 @@ func (s District) String() string {
 
 func NewDistrict(value string) (District, error) {
 	if len(value) > MaxDistrictLength {
-		return "", ErrDistrictMaxLength
+		return "", resperr.WithCodeAndMessage(
+			ErrDistrictMaxLength,
+			http.StatusBadRequest,
+			"O Bairro está muito grande, deve ter menos que"+strconv.Itoa(MaxCityLength)+" digitos",
+		)
 	}
 	if len(value) < MinDistrictLength {
-		return "", ErrDistrictMinLength
+		return "", resperr.WithCodeAndMessage(
+			ErrDistrictMinLength,
+			http.StatusBadRequest,
+			"O Bairro está muito pequeno, deve ter menos que"+strconv.Itoa(MinCityLength)+" digitos",
+		)
 	}
 	return District(value), nil
 }

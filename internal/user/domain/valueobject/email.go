@@ -1,7 +1,10 @@
 package uservo
 
 import (
-	"fmt"
+	"errors"
+	"ifoodish-store/pkg/resperr"
+	"net/http"
+	"strconv"
 
 	valid "github.com/asaskevich/govalidator"
 )
@@ -11,21 +14,9 @@ const (
 )
 
 var (
-	ErrEmailMaxLength     = fmt.Errorf("email deve possuir menos de %d caracteres", MaxEmailLength)
-	ErrEmailInvalidFormat = fmt.Errorf("utilize o padrão para email: example@mail.com")
+	ErrEmailMaxLength     = errors.New("email should have < " + strconv.Itoa(MaxEmailLength) + " characteres")
+	ErrEmailInvalidFormat = errors.New("email should have a valid format")
 )
-
-type Email string
-
-func NewEmail(value string) (Email, error) {
-	if len(value) > MaxEmailLength {
-		return "", ErrEmailMaxLength
-	}
-	if !valid.IsEmail(value) {
-		return "", ErrEmailInvalidFormat
-	}
-	return Email(value), nil
-}
 
 func (e Email) Equals(other Email) bool {
 	return e.String() == other.String()
@@ -33,4 +24,24 @@ func (e Email) Equals(other Email) bool {
 
 func (e Email) String() string {
 	return string(e)
+}
+
+type Email string
+
+func NewEmail(value string) (Email, error) {
+	if len(value) > MaxEmailLength {
+		return "", resperr.WithCodeAndMessage(
+			ErrEmailMaxLength,
+			http.StatusBadRequest,
+			"o Email está muito grande, deve ter menos que "+strconv.Itoa(MaxCityLength)+" digitos",
+		)
+	}
+	if !valid.IsEmail(value) {
+		return "", resperr.WithCodeAndMessage(
+			ErrEmailInvalidFormat,
+			http.StatusBadRequest,
+			"o Email está com um formato invalido, siga o padrão 'email@email.com', incluindo .br se necessário",
+		)
+	}
+	return Email(value), nil
 }

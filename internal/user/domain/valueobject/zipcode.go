@@ -1,7 +1,10 @@
 package uservo
 
 import (
-	"fmt"
+	"errors"
+	"ifoodish-store/pkg/resperr"
+	"net/http"
+	"strconv"
 
 	valid "github.com/asaskevich/govalidator"
 )
@@ -11,8 +14,8 @@ const (
 )
 
 var (
-	ErrZipcodeLength     = fmt.Errorf("o CEP deve possuir %d digitos", ZipcodeLength)
-	ErrZipcodeNotNumeric = fmt.Errorf("o CEP deve possuir apenas numeros")
+	ErrZipcodeLength     = errors.New("zipcode should have " + strconv.Itoa(ZipcodeLength) + " characteres")
+	ErrZipcodeNotNumeric = errors.New("zipcode should be valid ")
 )
 
 type Zipcode string
@@ -27,10 +30,18 @@ func (s Zipcode) String() string {
 
 func NewZipcode(value string) (Zipcode, error) {
 	if len(value) != ZipcodeLength {
-		return "", ErrZipcodeLength
+		return "", resperr.WithCodeAndMessage(
+			ErrZipcodeLength,
+			http.StatusBadRequest,
+			"O CEP deve ter "+strconv.Itoa(ZipcodeLength)+" dígitos",
+		)
 	}
 	if !valid.IsNumeric(value) {
-		return "", ErrZipcodeNotNumeric
+		return "", resperr.WithCodeAndMessage(
+			ErrZipcodeNotNumeric,
+			http.StatusBadRequest,
+			"O CEP deve ser numérico",
+		)
 	}
 	return Zipcode(value), nil
 }

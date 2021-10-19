@@ -13,39 +13,39 @@ const (
 	invalidLongitude2 = "20,1"
 )
 
-func TestLongitudeInvalid(t *testing.T) {
+func TestInvalidLongitude(t *testing.T) {
 	require := require.New(t)
 
-	longitude, myError := NewLongitude(invalidLongitude)
-	require.ErrorIs(myError, ErrLongitudeInvalidFormat)
+	longitude, err := NewLongitude(invalidLongitude)
+	require.ErrorIs(err, ErrLongitudeInvalidFormat)
 	require.Len(longitude, 0)
 
-	longitude2, myError := NewLongitude(invalidLongitude)
-	require.ErrorIs(myError, ErrLongitudeInvalidFormat)
+	longitude2, err := NewLongitude(invalidLongitude)
+	require.ErrorIs(err, ErrLongitudeInvalidFormat)
 	require.Len(longitude2, 0)
 
 }
 
-func TestLongitudeValid(t *testing.T) {
+func TestValidLongitude(t *testing.T) {
 	require := require.New(t)
 
-	longitude, myError := NewLongitude(validLongitude)
-	require.Nil(myError)
+	longitude, err := NewLongitude(validLongitude)
+	require.Nil(err)
 	require.NotEmpty(longitude)
 
-	longitude2, myError := NewLongitude(validLongitude2)
-	require.Nil(myError)
+	longitude2, err := NewLongitude(validLongitude2)
+	require.Nil(err)
 	require.NotEmpty(longitude2)
 }
 
 func TestEqualLongitude(t *testing.T) {
 	require := require.New(t)
 
-	longitude, myError := NewLongitude(validLongitude)
-	require.Nil(myError)
+	longitude, err := NewLongitude(validLongitude)
+	require.Nil(err)
 
-	longitude2, myError2 := NewLongitude(validLongitude)
-	require.Nil(myError2)
+	longitude2, err2 := NewLongitude(validLongitude)
+	require.Nil(err2)
 
 	response := longitude.Equals(longitude2)
 	require.True(response)
@@ -55,11 +55,11 @@ func TestEqualLongitude(t *testing.T) {
 func TestNotEqualLongitude(t *testing.T) {
 	require := require.New(t)
 
-	longitude, myError := NewLongitude(validLongitude)
-	require.Nil(myError)
+	longitude, err := NewLongitude(validLongitude)
+	require.Nil(err)
 
-	longitude2, myError2 := NewLongitude(validLongitude2)
-	require.Nil(myError2)
+	longitude2, err2 := NewLongitude(validLongitude2)
+	require.Nil(err2)
 
 	response := longitude.Equals(longitude2)
 	require.False(response)

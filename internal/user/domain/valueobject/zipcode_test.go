@@ -7,42 +7,38 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestZipcodeLength(t *testing.T) {
+func TestInvalidZipcode(t *testing.T) {
 	require := require.New(t)
 
-	zipcode, myError := NewZipcode(strings.Repeat("0", ZipcodeLength+1))
-	require.ErrorIs(myError, ErrZipcodeLength)
+	zipcode, err := NewZipcode(strings.Repeat("0", ZipcodeLength+1))
+	require.ErrorIs(err, ErrZipcodeLength)
 	require.Len(zipcode, 0)
 
-	zipcode, myError = NewZipcode(strings.Repeat("0", ZipcodeLength-1))
-	require.ErrorIs(myError, ErrZipcodeLength)
+	zipcode, err = NewZipcode(strings.Repeat("0", ZipcodeLength-1))
+	require.ErrorIs(err, ErrZipcodeLength)
 	require.Len(zipcode, 0)
-}
 
-func TestZipcodeCharacteres(t *testing.T) {
-	require := require.New(t)
-
-	Zipcode, myError := NewZipcode(strings.Repeat("-", ZipcodeLength))
-	require.ErrorIs(myError, ErrZipcodeNotNumeric)
+	Zipcode, err := NewZipcode(strings.Repeat("-", ZipcodeLength))
+	require.ErrorIs(err, ErrZipcodeNotNumeric)
 	require.Len(Zipcode, 0)
 }
 
 func TestValidZipcode(t *testing.T) {
 	require := require.New(t)
 
-	Zipcode, myError := NewZipcode(strings.Repeat("0", ZipcodeLength))
-	require.Nil(myError)
+	Zipcode, err := NewZipcode(strings.Repeat("0", ZipcodeLength))
+	require.Nil(err)
 	require.NotEmpty(Zipcode)
 }
 
 func TestEqualZipcode(t *testing.T) {
 	require := require.New(t)
 
-	zipcode, myError := NewZipcode(strings.Repeat("0", ZipcodeLength))
-	require.Nil(myError)
+	zipcode, err := NewZipcode(strings.Repeat("0", ZipcodeLength))
+	require.Nil(err)
 
-	zipcode2, myError2 := NewZipcode(strings.Repeat("0", ZipcodeLength))
-	require.Nil(myError2)
+	zipcode2, err2 := NewZipcode(strings.Repeat("0", ZipcodeLength))
+	require.Nil(err2)
 
 	require.True(zipcode.Equals(zipcode2))
 
@@ -51,11 +47,11 @@ func TestEqualZipcode(t *testing.T) {
 func TestNotEqualZipcode(t *testing.T) {
 	require := require.New(t)
 
-	zipcode, myError := NewZipcode(strings.Repeat("0", ZipcodeLength))
-	require.Nil(myError)
+	zipcode, err := NewZipcode(strings.Repeat("0", ZipcodeLength))
+	require.Nil(err)
 
-	zipcode2, myError2 := NewZipcode(strings.Repeat("1", ZipcodeLength))
-	require.Nil(myError2)
+	zipcode2, err2 := NewZipcode(strings.Repeat("1", ZipcodeLength))
+	require.Nil(err2)
 
 	require.False(zipcode.Equals(zipcode2))
 

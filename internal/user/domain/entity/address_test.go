@@ -107,14 +107,14 @@ func TestAddressInvalid(t *testing.T) {
 	})
 	// Number
 	example = validAddress
-	example.Number = uservo.Number(strings.Repeat("a", uservo.MinAddressNumberLength-1))
+	example.Number = uservo.AddressNumber(strings.Repeat("a", uservo.MinAddressNumberLength-1))
 	addresses = append(addresses, testIterator{
 		address: example,
 		err:     uservo.ErrAddressNumberMinLength,
 	})
 
 	example = validAddress
-	example.Number = uservo.Number(strings.Repeat("a", uservo.MaxAddressNumberLength+1))
+	example.Number = uservo.AddressNumber(strings.Repeat("a", uservo.MaxAddressNumberLength+1))
 	addresses = append(addresses, testIterator{
 		address: example,
 		err:     uservo.ErrAddressNumberMaxLength,

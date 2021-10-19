@@ -11,38 +11,34 @@ const (
 	PassPattern = 9
 )
 
-func TestRawPasswordMaxLength(t *testing.T) {
+func TestInvalidRawPassword(t *testing.T) {
 	require := require.New(t)
 
-	rawPassword, myError := NewPasswordRaw(strings.Repeat("a", MaxRawPasswordLength+1))
-	require.ErrorIs(myError, ErrRawPasswordMaxLength)
+	rawPassword, err := NewPasswordRaw(strings.Repeat("a", MaxRawPasswordLength+1))
+	require.ErrorIs(err, ErrRawPasswordMaxLength)
 	require.Len(rawPassword, 0)
-}
 
-func TestRawPasswordMinLength(t *testing.T) {
-	require := require.New(t)
-
-	rawPassword, myError := NewPasswordRaw(strings.Repeat("a", MinRawPasswordLength-1))
-	require.ErrorIs(myError, ErrRawPasswordMinLength)
+	rawPassword, err = NewPasswordRaw(strings.Repeat("a", MinRawPasswordLength-1))
+	require.ErrorIs(err, ErrRawPasswordMinLength)
 	require.Len(rawPassword, 0)
 }
 
 func TestValidRawPassword(t *testing.T) {
 	require := require.New(t)
 
-	rawPassword, myError := NewPasswordRaw("aaa#$%898")
-	require.Nil(myError)
+	rawPassword, err := NewPasswordRaw("aaa#$%898")
+	require.Nil(err)
 	require.NotEmpty(rawPassword)
 }
 
 func TestEqualRawPassword(t *testing.T) {
 	require := require.New(t)
 
-	rawPassword, myError := NewPasswordRaw(strings.Repeat("a", PassPattern))
-	require.Nil(myError)
+	rawPassword, err := NewPasswordRaw(strings.Repeat("a", PassPattern))
+	require.Nil(err)
 
-	rawPassword2, myError2 := NewPasswordRaw(strings.Repeat("a", PassPattern))
-	require.Nil(myError2)
+	rawPassword2, err2 := NewPasswordRaw(strings.Repeat("a", PassPattern))
+	require.Nil(err2)
 
 	require.True(rawPassword.Equals(rawPassword2))
 }
@@ -50,14 +46,14 @@ func TestEqualRawPassword(t *testing.T) {
 func TestNotEqualRawPassword(t *testing.T) {
 	require := require.New(t)
 
-	rawPassword, myError := NewPasswordRaw(strings.Repeat("a", PassPattern))
-	require.Nil(myError)
+	rawPassword, err := NewPasswordRaw(strings.Repeat("a", PassPattern))
+	require.Nil(err)
 
-	rawPassword2, myError2 := NewPasswordRaw(strings.Repeat("b", PassPattern))
-	require.Nil(myError2)
+	rawPassword2, err2 := NewPasswordRaw(strings.Repeat("b", PassPattern))
+	require.Nil(err2)
 
-	rawPassword3, myError3 := NewPasswordRaw(strings.Repeat("a", PassPattern-1))
-	require.Nil(myError3)
+	rawPassword3, err3 := NewPasswordRaw(strings.Repeat("a", PassPattern-1))
+	require.Nil(err3)
 
 	require.False(rawPassword.Equals(rawPassword3))
 	require.False(rawPassword.Equals(rawPassword2))

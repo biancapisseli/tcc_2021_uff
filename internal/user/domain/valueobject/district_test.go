@@ -7,20 +7,16 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestDistrictMaxLength(t *testing.T) {
+func TestInvalidDistrict(t *testing.T) {
 	require := require.New(t)
 
-	district, myError := NewDistrict(strings.Repeat("a", MaxDistrictLength+1))
-	require.ErrorIs(myError, ErrDistrictMaxLength)
+	district, err := NewDistrict(strings.Repeat("a", MaxDistrictLength+1))
+	require.ErrorIs(err, ErrDistrictMaxLength)
 
 	require.Len(district, 0)
-}
 
-func TestDistrictMinLength(t *testing.T) {
-	require := require.New(t)
-
-	district, myError := NewDistrict(strings.Repeat("a", MinDistrictLength-1))
-	require.ErrorIs(myError, ErrDistrictMinLength)
+	district, err = NewDistrict(strings.Repeat("a", MinDistrictLength-1))
+	require.ErrorIs(err, ErrDistrictMinLength)
 
 	require.Len(district, 0)
 }
@@ -28,20 +24,20 @@ func TestDistrictMinLength(t *testing.T) {
 func TestValidDistrict(t *testing.T) {
 	require := require.New(t)
 
-	district, myError := NewDistrict(strings.Repeat("a", MaxDistrictLength))
+	district, err := NewDistrict(strings.Repeat("a", MaxDistrictLength))
 
-	require.Nil(myError)
+	require.Nil(err)
 	require.NotEmpty(district)
 }
 
 func TestEqualDistrict(t *testing.T) {
 	require := require.New(t)
 
-	district, myError := NewDistrict(strings.Repeat("a", MaxDistrictLength))
-	require.Nil(myError)
+	district, err := NewDistrict(strings.Repeat("a", MaxDistrictLength))
+	require.Nil(err)
 
-	district2, myError2 := NewDistrict(strings.Repeat("a", MaxDistrictLength))
-	require.Nil(myError2)
+	district2, err2 := NewDistrict(strings.Repeat("a", MaxDistrictLength))
+	require.Nil(err2)
 
 	require.True(district.Equals(district2))
 
@@ -50,14 +46,14 @@ func TestEqualDistrict(t *testing.T) {
 func TestNotEqualDistrict(t *testing.T) {
 	require := require.New(t)
 
-	district, myError := NewDistrict(strings.Repeat("a", MaxDistrictLength))
-	require.Nil(myError)
+	district, err := NewDistrict(strings.Repeat("a", MaxDistrictLength))
+	require.Nil(err)
 
-	district2, myError2 := NewDistrict(strings.Repeat("b", MaxDistrictLength))
-	require.Nil(myError2)
+	district2, err2 := NewDistrict(strings.Repeat("b", MaxDistrictLength))
+	require.Nil(err2)
 
-	district3, myError3 := NewDistrict(strings.Repeat("a", MaxDistrictLength-1))
-	require.Nil(myError3)
+	district3, err3 := NewDistrict(strings.Repeat("a", MaxDistrictLength-1))
+	require.Nil(err3)
 
 	require.False(district.Equals(district3))
 	require.False(district.Equals(district2))

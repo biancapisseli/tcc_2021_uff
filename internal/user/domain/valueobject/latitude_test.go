@@ -13,39 +13,41 @@ const (
 	invalidLatitude2 = "20,1"
 )
 
-func TestLatitudePattern(t *testing.T) {
+func TestInvalidLatitude(t *testing.T) {
+
 	require := require.New(t)
 
-	latitude, myError := NewLatitude(invalidLatitude)
-	require.ErrorIs(myError, ErrLatitudeInvalidFormat)
+	latitude, err := NewLatitude(invalidLatitude)
+	require.ErrorIs(err, ErrLatitudeInvalidFormat)
 	require.Len(latitude, 0)
 
-	latitude2, myError := NewLatitude(invalidLatitude2)
-	require.ErrorIs(myError, ErrLatitudeInvalidFormat)
+	latitude2, err := NewLatitude(invalidLatitude2)
+	require.ErrorIs(err, ErrLatitudeInvalidFormat)
 	require.Len(latitude2, 0)
 
 }
 
-func TestLatitudeValid(t *testing.T) {
+func TestValidLatitude(t *testing.T) {
+
 	require := require.New(t)
 
-	latitude, myError := NewLatitude(validLatitude)
-	require.Nil(myError)
+	latitude, err := NewLatitude(validLatitude)
+	require.Nil(err)
 	require.NotEmpty(latitude)
 
-	latitude2, myError := NewLatitude(validLatitude2)
-	require.Nil(myError)
+	latitude2, err := NewLatitude(validLatitude2)
+	require.Nil(err)
 	require.NotEmpty(latitude2)
 }
 
 func TestEqualLatitude(t *testing.T) {
 	require := require.New(t)
 
-	latitude, myError := NewLatitude(validLatitude)
-	require.Nil(myError)
+	latitude, err := NewLatitude(validLatitude)
+	require.Nil(err)
 
-	latitude2, myError2 := NewLatitude(validLatitude)
-	require.Nil(myError2)
+	latitude2, err2 := NewLatitude(validLatitude)
+	require.Nil(err2)
 
 	require.True(latitude.Equals(latitude2))
 
@@ -54,11 +56,11 @@ func TestEqualLatitude(t *testing.T) {
 func TestNotEqualLatitude(t *testing.T) {
 	require := require.New(t)
 
-	latitude, myError := NewLatitude(validLatitude)
-	require.Nil(myError)
+	latitude, err := NewLatitude(validLatitude)
+	require.Nil(err)
 
-	latitude2, myError2 := NewLatitude(validLatitude2)
-	require.Nil(myError2)
+	latitude2, err2 := NewLatitude(validLatitude2)
+	require.Nil(err2)
 
 	require.False(latitude.Equals(latitude2))
 

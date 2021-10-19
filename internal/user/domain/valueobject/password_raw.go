@@ -1,6 +1,11 @@
 package uservo
 
-import "fmt"
+import (
+	"errors"
+	"ifoodish-store/pkg/resperr"
+	"net/http"
+	"strconv"
+)
 
 const (
 	MaxRawPasswordLength = 30
@@ -8,8 +13,8 @@ const (
 )
 
 var (
-	ErrRawPasswordMaxLength = fmt.Errorf("a senha deve possuir no máximo %d caracteres", MaxRawPasswordLength)
-	ErrRawPasswordMinLength = fmt.Errorf("a senha deve possuir mais que %d caracteres", MinRawPasswordLength)
+	ErrRawPasswordMaxLength = errors.New("passoword raw should have < " + strconv.Itoa(MaxRawPasswordLength) + " characters")
+	ErrRawPasswordMinLength = errors.New("passoword raw should have > " + strconv.Itoa(MinRawPasswordLength) + " characters")
 )
 
 type PasswordRaw string
@@ -24,10 +29,18 @@ func (rp PasswordRaw) String() string {
 
 func NewPasswordRaw(value string) (PasswordRaw, error) {
 	if len(value) > MaxRawPasswordLength {
-		return "", ErrRawPasswordMaxLength
+		return "", resperr.WithCodeAndMessage(
+			ErrRawPasswordMaxLength,
+			http.StatusBadRequest,
+			"A senha está muito grande, deve ter menos que "+strconv.Itoa(MaxRawPasswordLength)+" digitos",
+		)
 	}
 	if len(value) < MinRawPasswordLength {
-		return "", ErrRawPasswordMinLength
+		return "", resperr.WithCodeAndMessage(
+			ErrRawPasswordMinLength,
+			http.StatusBadRequest,
+			"A senha está muito pequena, deve ter menos que "+strconv.Itoa(MinRawPasswordLength)+" digitos",
+		)
 	}
 	return PasswordRaw(value), nil
 }

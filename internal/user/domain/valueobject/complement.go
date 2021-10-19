@@ -1,13 +1,18 @@
 package uservo
 
-import "fmt"
+import (
+	"errors"
+	"ifoodish-store/pkg/resperr"
+	"net/http"
+	"strconv"
+)
 
 const (
 	MaxComplementLength = 300
 )
 
 var (
-	ErrComplementMaxLength = fmt.Errorf("o complemento deve possuir no máximo %d caracteres", MaxComplementLength)
+	ErrComplementMaxLength = errors.New("complement should have < " + strconv.Itoa(MaxComplementLength) + " characteres")
 )
 
 type Complement string
@@ -22,7 +27,11 @@ func (s Complement) String() string {
 
 func NewComplement(value string) (Complement, error) {
 	if len(value) > MaxComplementLength {
-		return "", ErrComplementMaxLength
+		return "", resperr.WithCodeAndMessage(
+			ErrComplementMaxLength,
+			http.StatusBadRequest,
+			"O complemento está muito grande, deve ter menos que "+strconv.Itoa(MaxComplementLength)+" digitos",
+		)
 	}
 	return Complement(value), nil
 }

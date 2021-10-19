@@ -1,6 +1,11 @@
 package uservo
 
-import "fmt"
+import (
+	"errors"
+	"ifoodish-store/pkg/resperr"
+	"net/http"
+	"strconv"
+)
 
 const (
 	MaxCityLength = 50
@@ -8,8 +13,8 @@ const (
 )
 
 var (
-	ErrCityMaxLength = fmt.Errorf("a cidade deve possuir no máximo %d caracteres", MaxCityLength)
-	ErrCityMinLength = fmt.Errorf("a cidade deve possuir no mínimo %d caracteres", MaxCityLength)
+	ErrCityMaxLength = errors.New("city should have < " + strconv.Itoa(MaxCityLength) + " characteres")
+	ErrCityMinLength = errors.New("city should have > " + strconv.Itoa(MinCityLength) + " characteres")
 )
 
 type City string
@@ -24,10 +29,18 @@ func (s City) String() string {
 
 func NewCity(value string) (City, error) {
 	if len(value) > MaxCityLength {
-		return "", ErrCityMaxLength
+		return "", resperr.WithCodeAndMessage(
+			ErrCityMaxLength,
+			http.StatusBadRequest,
+			"A Cidade está muito grande, deve ter menos que "+strconv.Itoa(MaxCityLength)+" digitos",
+		)
 	}
 	if len(value) < MinCityLength {
-		return "", ErrCityMinLength
+		return "", resperr.WithCodeAndMessage(
+			ErrCityMinLength,
+			http.StatusBadRequest,
+			"A Cidade está muito pequeno, deve ter mais que "+strconv.Itoa(MinCityLength)+" digitos",
+		)
 	}
 	return City(value), nil
 }

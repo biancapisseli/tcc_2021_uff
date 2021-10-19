@@ -12,15 +12,15 @@ type RegisteredAddress struct {
 }
 
 type Address struct {
-	Street     uservo.Street     `json:"street"`
-	District   uservo.District   `json:"district"`
-	City       uservo.City       `json:"city"`
-	State      uservo.State      `json:"state"`
-	Complement uservo.Complement `json:"complement"`
-	Number     uservo.Number     `json:"number"`
-	Zipcode    uservo.Zipcode    `json:"zipcode"`
-	Latitude   uservo.Latitude   `json:"latitude"`
-	Longitude  uservo.Longitude  `json:"longitude"`
+	Street     uservo.Street        `json:"street"`
+	District   uservo.District      `json:"district"`
+	City       uservo.City          `json:"city"`
+	State      uservo.State         `json:"state"`
+	Complement uservo.Complement    `json:"complement"`
+	Number     uservo.AddressNumber `json:"number"`
+	Zipcode    uservo.Zipcode       `json:"zipcode"`
+	Latitude   uservo.Latitude      `json:"latitude"`
+	Longitude  uservo.Longitude     `json:"longitude"`
 }
 
 func NewRegisteredAddress(params RegisteredAddress) (newAddress *RegisteredAddress, err error) {

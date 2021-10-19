@@ -7,18 +7,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestStreetMaxLength(t *testing.T) {
+func TestInvalidStreet(t *testing.T) {
 	require := require.New(t)
 
 	street, myError := NewStreet(strings.Repeat("a", MaxStreetLength+1))
 	require.ErrorIs(myError, ErrStreetMaxLength)
 	require.Len(street, 0)
-}
 
-func TestStreetMinLength(t *testing.T) {
-	require := require.New(t)
-
-	street, myError := NewStreet(strings.Repeat("a", MinStreetLength-1))
+	street, myError = NewStreet(strings.Repeat("a", MinStreetLength-1))
 	require.ErrorIs(myError, ErrStreetMinLength)
 	require.Len(street, 0)
 }

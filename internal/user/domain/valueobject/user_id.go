@@ -1,9 +1,13 @@
 package uservo
 
-import "fmt"
+import (
+	"errors"
+	"ifoodish-store/pkg/resperr"
+	"net/http"
+)
 
 var (
-	ErrInvalidUserID = fmt.Errorf("id do usuário é inválido")
+	ErrInvalidUserID = errors.New("user ID shoul be > 0")
 )
 
 type UserID int64
@@ -14,7 +18,11 @@ func (uid UserID) Equals(other UserID) bool {
 
 func NewUserID(value int64) (UserID, error) {
 	if value <= 0 {
-		return 0, ErrInvalidUserID
+		return 0, resperr.WithCodeAndMessage(
+			ErrInvalidUserID,
+			http.StatusBadRequest,
+			"O ID do usuário deve ser maior que 0",
+		)
 	}
 	return UserID(value), nil
 }

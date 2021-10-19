@@ -1,13 +1,15 @@
 package uservo
 
 import (
-	"fmt"
+	"errors"
+	"ifoodish-store/pkg/resperr"
+	"net/http"
 
 	valid "github.com/asaskevich/govalidator"
 )
 
 var (
-	ErrLongitudeInvalidFormat = fmt.Errorf("longitude em formato inválido")
+	ErrLongitudeInvalidFormat = errors.New("longitude should have a valid format")
 )
 
 type Longitude string
@@ -22,7 +24,11 @@ func (s Longitude) String() string {
 
 func NewLongitude(value string) (Longitude, error) {
 	if !valid.IsLongitude(value) {
-		return "", ErrLongitudeInvalidFormat
+		return "", resperr.WithCodeAndMessage(
+			ErrLongitudeInvalidFormat,
+			http.StatusBadRequest,
+			"A Longitude é invalida,  utilize o padrão 'X.XXXX' ou '-X.XXXX'",
+		)
 	}
 	return Longitude(value), nil
 

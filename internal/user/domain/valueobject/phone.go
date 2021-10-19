@@ -1,6 +1,11 @@
 package uservo
 
-import "fmt"
+import (
+	"errors"
+	"ifoodish-store/pkg/resperr"
+	"net/http"
+	"strconv"
+)
 
 const (
 	MaxPhoneLength = 11
@@ -8,8 +13,8 @@ const (
 )
 
 var (
-	ErrPhoneMaxLength = fmt.Errorf("o telefone deve possuir no máximo %d caracteres", MaxPhoneLength)
-	ErrPhoneMinLength = fmt.Errorf("o telefone deve possuir mais que %d caracteres", MinPhoneLength)
+	ErrPhoneMaxLength = errors.New("phone should have < " + strconv.Itoa(MaxPhoneLength) + " characteres")
+	ErrPhoneMinLength = errors.New("phone should have > " + strconv.Itoa(MinPhoneLength) + " characteres")
 )
 
 type Phone string
@@ -24,10 +29,18 @@ func (p Phone) String() string {
 
 func NewPhone(value string) (Phone, error) {
 	if len(value) > MaxPhoneLength {
-		return "", ErrPhoneMaxLength
+		return "", resperr.WithCodeAndMessage(
+			ErrPhoneMaxLength,
+			http.StatusBadRequest,
+			"O telefone está muito grande, deve ter menos que "+strconv.Itoa(MaxPhoneLength)+" digitos",
+		)
 	}
 	if len(value) < MinPhoneLength {
-		return "", ErrPhoneMinLength
+		return "", resperr.WithCodeAndMessage(
+			ErrPhoneMinLength,
+			http.StatusBadRequest,
+			"O telefone está muito grande, deve ter menos que "+strconv.Itoa(MinPhoneLength)+" digitos",
+		)
 	}
 	return Phone(value), nil
 }

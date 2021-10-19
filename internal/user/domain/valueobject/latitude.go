@@ -1,13 +1,15 @@
 package uservo
 
 import (
-	"fmt"
+	"errors"
+	"ifoodish-store/pkg/resperr"
+	"net/http"
 
 	valid "github.com/asaskevich/govalidator"
 )
 
 var (
-	ErrLatitudeInvalidFormat = fmt.Errorf("latitude inválida")
+	ErrLatitudeInvalidFormat = errors.New(" latitude should have a valid format")
 )
 
 type Latitude string
@@ -22,7 +24,11 @@ func (s Latitude) String() string {
 
 func NewLatitude(value string) (Latitude, error) {
 	if !valid.IsLatitude(value) {
-		return "", ErrLatitudeInvalidFormat
+		return "", resperr.WithCodeAndMessage(
+			ErrLatitudeInvalidFormat,
+			http.StatusBadRequest,
+			"A Latitude é invalida, utilize o padrão 'X.XXXX' ou '-X.XXXX'",
+		)
 	}
 	return Latitude(value), nil
 
