@@ -2,9 +2,10 @@ package uservo
 
 import (
 	"errors"
+	"fmt"
 	"ifoodish-store/pkg/resperr"
+
 	"net/http"
-	"strconv"
 
 	valid "github.com/asaskevich/govalidator"
 )
@@ -15,9 +16,9 @@ const (
 )
 
 var (
-	ErrUserNameMaxLength        = errors.New("user name should have < " + strconv.Itoa(MaxStreetLength) + " characteres")
-	ErrUserNameMinLength        = errors.New("user name should have > " + strconv.Itoa(MinStreetLength) + " characteres")
-	ErrUserNameInvalidCharacter = errors.New("user name should have valid characteres")
+	ErrUserNameMaxLength        = fmt.Errorf("user name should have < %d characters", MaxStreetLength)
+	ErrUserNameMinLength        = fmt.Errorf("user name should have > %d characters", MinStreetLength)
+	ErrUserNameInvalidCharacter = errors.New("user name should have only letters and spaces")
 )
 
 type UserName string
@@ -27,14 +28,14 @@ func NewUserName(value string) (UserName, error) {
 		return "", resperr.WithCodeAndMessage(
 			ErrUserNameMaxLength,
 			http.StatusBadRequest,
-			"O nome do usuário está muito grande, deve ter menos que "+strconv.Itoa(MaxStreetLength)+" digitos",
+			fmt.Sprintf("o nome do usuário deve ter no máximo %d caracteres", MaxStreetLength),
 		)
 	}
 	if len(value) < MinUserNameLength {
 		return "", resperr.WithCodeAndMessage(
 			ErrUserNameMinLength,
 			http.StatusBadRequest,
-			"O nome do usuário está muito pequeno, deve ter mais que "+strconv.Itoa(MinStreetLength)+" digitos",
+			fmt.Sprintf("o nome do usuário deve ter no mínimo %d caracteres", MinStreetLength),
 		)
 	}
 
@@ -42,7 +43,7 @@ func NewUserName(value string) (UserName, error) {
 		return "", resperr.WithCodeAndMessage(
 			ErrUserNameInvalidCharacter,
 			http.StatusBadRequest,
-			"O nome do usuário é inválido",
+			"o nome do usuário é inválido",
 		)
 	}
 	return UserName(value), nil

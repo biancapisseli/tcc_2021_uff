@@ -3,6 +3,7 @@ package uservo
 import (
 	"errors"
 	"ifoodish-store/pkg/resperr"
+
 	"net/http"
 
 	valid "github.com/asaskevich/govalidator"
@@ -27,7 +28,7 @@ func NewLatitude(value string) (Latitude, error) {
 		return "", resperr.WithCodeAndMessage(
 			ErrLatitudeInvalidFormat,
 			http.StatusBadRequest,
-			"A Latitude é invalida, utilize o padrão 'X.XXXX' ou '-X.XXXX'",
+			`a latitude deve estar no formato "X.XXXX" ou "-X.XXXX"`,
 		)
 	}
 	return Latitude(value), nil

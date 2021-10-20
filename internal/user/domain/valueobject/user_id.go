@@ -1,28 +1,32 @@
 package uservo
 
 import (
-	"errors"
 	"ifoodish-store/pkg/resperr"
+
 	"net/http"
+
+	"github.com/google/uuid"
 )
 
-var (
-	ErrInvalidUserID = errors.New("user ID shoul be > 0")
-)
-
-type UserID int64
+type UserID uuid.UUID
 
 func (uid UserID) Equals(other UserID) bool {
-	return uid == other
+	return uuid.UUID(uid).String() == uuid.UUID(other).String()
 }
 
-func NewUserID(value int64) (UserID, error) {
-	if value <= 0 {
-		return 0, resperr.WithCodeAndMessage(
-			ErrInvalidUserID,
+func (uid UserID) String() string {
+	return uuid.UUID(uid).String()
+}
+
+func NewUserID(value string) (UserID, error) {
+	userUUID, err := uuid.Parse(value)
+	if err != nil || userUUID == uuid.Nil {
+		return UserID(uuid.Nil), resperr.WithCodeAndMessage(
+			err,
 			http.StatusBadRequest,
-			"O ID do usuário deve ser maior que 0",
+			"o ID do usuário deve estar no formato de UUID",
 		)
 	}
-	return UserID(value), nil
+
+	return UserID(userUUID), nil
 }

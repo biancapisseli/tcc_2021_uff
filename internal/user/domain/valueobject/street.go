@@ -1,10 +1,10 @@
 package uservo
 
 import (
-	"errors"
+	"fmt"
 	"ifoodish-store/pkg/resperr"
+
 	"net/http"
-	"strconv"
 )
 
 const (
@@ -13,8 +13,8 @@ const (
 )
 
 var (
-	ErrStreetMaxLength = errors.New("street should have < " + strconv.Itoa(MaxStreetLength) + "characteres")
-	ErrStreetMinLength = errors.New("street should have > " + strconv.Itoa(MinStreetLength) + "characteres")
+	ErrStreetMaxLength = fmt.Errorf("street should have < %d characters", MaxStreetLength)
+	ErrStreetMinLength = fmt.Errorf("street should have > %d characters", MinStreetLength)
 )
 
 type Street string
@@ -32,14 +32,14 @@ func NewStreet(value string) (Street, error) {
 		return "", resperr.WithCodeAndMessage(
 			ErrStreetMaxLength,
 			http.StatusBadRequest,
-			"A rua está muito grande, deve ter menos que "+strconv.Itoa(MaxStreetLength)+" digitos",
+			fmt.Sprintf("a rua deve ter no máximo %d caracteres", MaxStreetLength),
 		)
 	}
 	if len(value) < MinStreetLength {
 		return "", resperr.WithCodeAndMessage(
 			ErrStreetMinLength,
 			http.StatusBadRequest,
-			"A rua está muito pequena, deve ter mais que "+strconv.Itoa(MinStreetLength)+" digitos",
+			fmt.Sprintf("a rua deve ter no mínimo %d caracteres", MinStreetLength),
 		)
 	}
 	return Street(value), nil

@@ -4,9 +4,13 @@ import (
 	"encoding/json"
 	userent "ifoodish-store/internal/user/domain/entity"
 	uservo "ifoodish-store/internal/user/domain/valueobject"
+	"ifoodish-store/pkg/resperr"
+
+	"net/http"
 	"strings"
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
 
@@ -105,7 +109,7 @@ func TestRegisteredUserValid(t *testing.T) {
 
 	ex := userent.RegisteredUser{}
 	ex.User = validUser
-	ex.ID = 50
+	ex.ID = uservo.UserID(uuid.New())
 
 	user, err := userent.NewRegisteredUser(ex)
 	require.Nil(err)
@@ -119,14 +123,9 @@ func TestRegisteredUserInvalid(t *testing.T) {
 	ex := userent.RegisteredUser{}
 	ex.User = validUser
 
-	ex.ID = 0
+	ex.ID = uservo.UserID([16]byte{0, 0})
 	user, err := userent.NewRegisteredUser(ex)
-	require.ErrorIs(err, uservo.ErrInvalidUserID)
-	require.Nil(user)
-
-	ex.ID = -10
-	user, err = userent.NewRegisteredUser(ex)
-	require.ErrorIs(err, uservo.ErrInvalidUserID)
+	require.Equal(http.StatusBadRequest, resperr.StatusCode(err))
 	require.Nil(user)
 
 	ex.Name = uservo.UserName(strings.Repeat("a", uservo.MinUserNameLength-1))

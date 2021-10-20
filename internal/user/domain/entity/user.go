@@ -25,7 +25,7 @@ func NewRegisteredUser(params RegisteredUser) (newUser *RegisteredUser, err erro
 	}
 	newUser.User = *childUser
 
-	newUser.ID, err = uservo.NewUserID(int64(params.ID))
+	newUser.ID, err = uservo.NewUserID(params.ID.String())
 	if err != nil {
 		return nil, fmt.Errorf("error creating new registered user id: %w", err)
 	}

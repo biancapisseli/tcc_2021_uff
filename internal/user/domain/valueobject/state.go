@@ -1,10 +1,10 @@
 package uservo
 
 import (
-	"errors"
+	"fmt"
 	"ifoodish-store/pkg/resperr"
+
 	"net/http"
-	"strconv"
 )
 
 const (
@@ -13,8 +13,8 @@ const (
 )
 
 var (
-	ErrStateMaxLength = errors.New("state should have < " + strconv.Itoa(MaxStateLength) + " characteres")
-	ErrStateMinLength = errors.New("state should have > " + strconv.Itoa(MinStateLength) + " characteres")
+	ErrStateMaxLength = fmt.Errorf("state should have < %d characters", MaxStateLength)
+	ErrStateMinLength = fmt.Errorf("state should have > %d characters", MinStateLength)
 )
 
 type State string
@@ -32,14 +32,14 @@ func NewState(value string) (State, error) {
 		return "", resperr.WithCodeAndMessage(
 			ErrStateMaxLength,
 			http.StatusBadRequest,
-			"O estado está muito grande, deve ter menos que"+strconv.Itoa(MaxStateLength)+" digitos",
+			fmt.Sprintf("o estado deve ter no máximo %d caracteres", MaxStateLength),
 		)
 	}
 	if len(value) < MinStateLength {
 		return "", resperr.WithCodeAndMessage(
 			ErrStateMinLength,
 			http.StatusBadRequest,
-			"O estado está muito pequeno, deve ter mais que"+strconv.Itoa(MinStateLength)+" digitos",
+			fmt.Sprintf("o estado deve ter no mínimo %d caracteres", MinStateLength),
 		)
 	}
 	return State(value), nil

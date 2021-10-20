@@ -1,10 +1,10 @@
 package uservo
 
 import (
-	"errors"
+	"fmt"
 	"ifoodish-store/pkg/resperr"
+
 	"net/http"
-	"strconv"
 )
 
 const (
@@ -13,8 +13,8 @@ const (
 )
 
 var (
-	ErrAddressNumberMaxLength = errors.New(" address_number should have < " + strconv.Itoa(MaxAddressNumberLength) + " characteres")
-	ErrAddressNumberMinLength = errors.New(" address_number should have > " + strconv.Itoa(MinAddressNumberLength) + " characteres")
+	ErrAddressNumberMaxLength = fmt.Errorf("address_number should have < %d characters", MaxAddressNumberLength)
+	ErrAddressNumberMinLength = fmt.Errorf("address_number should have > %d characters", MinAddressNumberLength)
 )
 
 type AddressNumber string
@@ -32,14 +32,14 @@ func NewAddressNumber(value string) (AddressNumber, error) {
 		return "", resperr.WithCodeAndMessage(
 			ErrAddressNumberMaxLength,
 			http.StatusBadRequest,
-			"O numero está muito grande, deve ter menos que "+strconv.Itoa(MaxAddressNumberLength)+"digitos",
+			fmt.Sprintf("o número do endereço deve ter no máximo %d caracteres", MaxAddressNumberLength),
 		)
 	}
 	if len(value) <= MinAddressNumberLength {
 		return "", resperr.WithCodeAndMessage(
 			ErrAddressNumberMinLength,
 			http.StatusBadRequest,
-			"O numero está muito pequeno, deve ter mais que "+strconv.Itoa(MinAddressNumberLength)+"digito",
+			fmt.Sprintf("o número do endereço deve ter no máximo %d caracteres", MaxAddressNumberLength),
 		)
 	}
 
