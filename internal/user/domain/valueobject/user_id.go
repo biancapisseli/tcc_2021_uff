@@ -30,3 +30,7 @@ func NewUserID(value string) (UserID, error) {
 
 	return UserID(userUUID), nil
 }
+
+func GenerateNewUserID() UserID {
+	return UserID(uuid.New())
+}
