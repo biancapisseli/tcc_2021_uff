@@ -21,30 +21,29 @@ func NewRegisteredUser(params RegisteredUser) (newUser *RegisteredUser, err erro
 	newUser = new(RegisteredUser)
 	childUser, err := NewUser(params.User)
 	if err != nil {
-		return nil, fmt.Errorf("error creating new registered user: %w", err)
+		return newUser, fmt.Errorf("error creating new registered user: %w", err)
 	}
-	newUser.User = *childUser
+	newUser.User = childUser
 
 	newUser.ID, err = uservo.NewUserID(params.ID.String())
 	if err != nil {
-		return nil, fmt.Errorf("error creating new registered user id: %w", err)
+		return newUser, fmt.Errorf("error creating new registered user id: %w", err)
 	}
 	return newUser, nil
 }
 
-func NewUser(params User) (newUser *User, err error) {
-	newUser = new(User)
+func NewUser(params User) (newUser User, err error) {
 	newUser.Name, err = uservo.NewUserName(string(params.Name))
 	if err != nil {
-		return nil, fmt.Errorf("error creating new user name: %w", err)
+		return newUser, fmt.Errorf("error creating new user name: %w", err)
 	}
 	newUser.Email, err = uservo.NewEmail(string(params.Email))
 	if err != nil {
-		return nil, fmt.Errorf("error creating new user email: %w", err)
+		return newUser, fmt.Errorf("error creating new user email: %w", err)
 	}
 	newUser.Phone, err = uservo.NewPhone(string(params.Phone))
 	if err != nil {
-		return nil, fmt.Errorf("error creating new user phone: %w", err)
+		return newUser, fmt.Errorf("error creating new user phone: %w", err)
 	}
 	return newUser, nil
 }
@@ -63,6 +62,6 @@ func (u *User) UnmarshalJSON(data []byte) error {
 		return fmt.Errorf("error unmarshalling user: %w", err)
 	}
 
-	*u = *newUser
+	*u = newUser
 	return nil
 }

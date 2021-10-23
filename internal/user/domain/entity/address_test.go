@@ -150,9 +150,8 @@ func TestAddressInvalid(t *testing.T) {
 	})
 
 	for _, it := range addresses {
-		newAddress, err := userent.NewAddress(it.address)
+		_, err := userent.NewAddress(it.address)
 		require.ErrorIs(err, it.err)
-		require.Nil(newAddress)
 	}
 
 }
@@ -175,19 +174,16 @@ func TestRegisteredAddressInvalidID(t *testing.T) {
 	ex := userent.RegisteredAddress{}
 	ex.Address = validAddress
 	ex.ID = 0
-	address, err := userent.NewRegisteredAddress(ex)
+	_, err := userent.NewRegisteredAddress(ex)
 	require.ErrorIs(err, uservo.ErrInvalidAddressID)
-	require.Nil(address)
 
 	ex.ID = -10
-	address, err = userent.NewRegisteredAddress(ex)
+	_, err = userent.NewRegisteredAddress(ex)
 	require.ErrorIs(err, uservo.ErrInvalidAddressID)
-	require.Nil(address)
 
 	ex.City = uservo.City(strings.Repeat("a", uservo.MinCityLength-1))
-	address, err = userent.NewRegisteredAddress(ex)
+	_, err = userent.NewRegisteredAddress(ex)
 	require.ErrorIs(err, uservo.ErrCityMinLength)
-	require.Nil(address)
 
 }
 

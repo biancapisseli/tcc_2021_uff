@@ -10,6 +10,6 @@ func (s UserService) GetAddresses(
 	ctx context.Context,
 	userID uservo.UserID,
 	addressID uservo.AddressID,
-) (addresses []*userent.RegisteredAddress, err error) {
+) (addresses []userent.RegisteredAddress, err error) {
 	return s.repo.GetUserAddresses(ctx, userID)
 }

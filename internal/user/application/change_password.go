@@ -10,7 +10,7 @@ import (
 	"ifoodish-store/pkg/resperr"
 )
 
-func (s *UserService) ChangePassword(
+func (s UserService) ChangePassword(
 	ctx context.Context,
 	userID uservo.UserID,
 	currentPassword uservo.PasswordRaw,

@@ -9,7 +9,7 @@ import (
 func (s UserService) UpdateAddress(
 	ctx context.Context,
 	userID uservo.UserID,
-	address *userent.RegisteredAddress,
+	address userent.RegisteredAddress,
 ) (err error) {
 	return s.repo.SaveUserAddress(ctx, userID, address)
 }

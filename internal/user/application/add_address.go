@@ -10,7 +10,7 @@ import (
 func (s UserService) AddAddress(
 	ctx context.Context,
 	userID uservo.UserID,
-	address *userent.Address,
+	address userent.Address,
 ) (addressID uservo.AddressID, err error) {
 	addressID, err = s.repo.AddUserAddress(ctx, userID, address)
 	if err != nil {

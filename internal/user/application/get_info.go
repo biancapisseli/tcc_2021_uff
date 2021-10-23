@@ -10,6 +10,6 @@ func (s UserService) GetUserInfo(
 	ctx context.Context,
 	userID uservo.UserID,
 	addressID uservo.AddressID,
-) (userInfo *userent.RegisteredUser, err error) {
+) (userInfo userent.RegisteredUser, err error) {
 	return s.repo.GetUserInfo(ctx, userID)
 }

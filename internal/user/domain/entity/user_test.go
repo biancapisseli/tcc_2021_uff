@@ -124,14 +124,12 @@ func TestRegisteredUserInvalid(t *testing.T) {
 	ex.User = validUser
 
 	ex.ID = uservo.UserID([16]byte{0, 0})
-	user, err := userent.NewRegisteredUser(ex)
+	_, err := userent.NewRegisteredUser(ex)
 	require.Equal(http.StatusBadRequest, resperr.StatusCode(err))
-	require.Nil(user)
 
 	ex.Name = uservo.UserName(strings.Repeat("a", uservo.MinUserNameLength-1))
-	user, err = userent.NewRegisteredUser(ex)
+	_, err = userent.NewRegisteredUser(ex)
 	require.ErrorIs(err, uservo.ErrUserNameMinLength)
-	require.Nil(user)
 
 }
 
