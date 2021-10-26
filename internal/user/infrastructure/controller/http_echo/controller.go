@@ -1,22 +1,30 @@
-package userhttpginctl
+package userhttpechoctl
 
 import (
 	userctlint "ifoodish-store/internal/user/infrastructure/controller/interfaces"
+	"ifoodish-store/pkg/middleware"
 
 	"github.com/labstack/echo/v4"
 )
 
 type UserHTTPGinController struct {
-	useCases userctlint.UserUseCases
+	useCases              userctlint.UserUseCases
+	transactionMiddleware middleware.TransactionMiddleware
 }
 
-func New(useCases userctlint.UserUseCases) *UserHTTPGinController {
+func New(
+	useCases userctlint.UserUseCases,
+	transactionMiddleware middleware.TransactionMiddleware,
+) *UserHTTPGinController {
 	return &UserHTTPGinController{
-		useCases: useCases,
+		useCases:              useCases,
+		transactionMiddleware: transactionMiddleware,
 	}
 }
 
 func (c UserHTTPGinController) Register(router *echo.Group) {
+
+	router.Use(c.transactionMiddleware.Middleware)
 
 	router.POST("/user", c.RegisterUser)
 	router.GET("/user/:user_id", c.GetUserInfo)

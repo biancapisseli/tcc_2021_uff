@@ -1,4 +1,4 @@
-package userhttpginctl
+package userhttpechoctl
 
 import (
 	"fmt"
@@ -45,8 +45,10 @@ func (c UserHTTPGinController) AddUserAddress(echoCtx echo.Context) (err error) 
 		AddressID uservo.AddressID `json:"address_id"`
 	}
 
+	ctx := echoCtx.Request().Context()
+
 	if resp.AddressID, err = c.useCases.AddUserAddress(
-		echoCtx.Request().Context(),
+		ctx,
 		userID,
 		address,
 	); err != nil {

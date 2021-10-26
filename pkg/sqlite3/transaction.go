@@ -44,7 +44,7 @@ func (c *Connection) GetTransaction(ctx context.Context) (*sqlx.Tx, error) {
 	return tx, nil
 }
 
-func (c *Connection) Commit(ctx context.Context) error {
+func (c *Connection) CommitTransaction(ctx context.Context) error {
 	tx, err := c.GetTransaction(ctx)
 	if err != nil {
 		return fmt.Errorf("error trying to commit transaction: %w", err)
@@ -62,7 +62,7 @@ func (c *Connection) Commit(ctx context.Context) error {
 	return nil
 }
 
-func (c *Connection) Rollback(ctx context.Context) error {
+func (c *Connection) RollbackTransaction(ctx context.Context) error {
 	tx, err := c.GetTransaction(ctx)
 	if err != nil {
 		return resperr.WithStatusCode(

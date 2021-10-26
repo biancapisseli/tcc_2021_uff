@@ -1,4 +1,4 @@
-package userhttpginctl
+package userhttpechoctl
 
 import "github.com/labstack/echo/v4"
 
