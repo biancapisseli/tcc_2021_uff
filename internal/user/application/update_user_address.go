@@ -1,4 +1,4 @@
-package userhttpctl
+package usersvc
 
 import (
 	"context"
@@ -6,10 +6,10 @@ import (
 	uservo "ifoodish-store/internal/user/domain/valueobject"
 )
 
-func (c UserHTTPController) AddAddress(
+func (s UserService) UpdateUserAddress(
 	ctx context.Context,
 	userID uservo.UserID,
-	address *userent.Address,
-) (addressID uservo.AddressID, err error) {
-	return c.repo.AddUserAddress(ctx, userID, address)
+	address userent.RegisteredAddress,
+) (err error) {
+	return s.repo.SaveUserAddress(ctx, userID, address)
 }

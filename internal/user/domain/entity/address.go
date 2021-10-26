@@ -24,11 +24,10 @@ type Address struct {
 }
 
 func NewRegisteredAddress(params RegisteredAddress) (newAddress RegisteredAddress, err error) {
-	childAddress, err := NewAddress(params.Address)
+	newAddress.Address, err = NewAddress(params.Address)
 	if err != nil {
 		return newAddress, fmt.Errorf("error creating new registered address: %w", err)
 	}
-	newAddress.Address = *childAddress
 
 	newAddress.ID, err = uservo.NewAddressID(int64(params.ID))
 	if err != nil {
@@ -37,7 +36,7 @@ func NewRegisteredAddress(params RegisteredAddress) (newAddress RegisteredAddres
 	return newAddress, nil
 }
 
-func NewAddress(address Address) (newAddress *Address, err error) {
+func NewAddress(address Address) (newAddress Address, err error) {
 	newAddress.Street, err = uservo.NewStreet(string(address.Street))
 	if err != nil {
 		return newAddress, fmt.Errorf(
@@ -118,7 +117,7 @@ func (a *Address) UnmarshalJSON(data []byte) error {
 		return fmt.Errorf("error unmarshalling address: %w", err)
 	}
 
-	*a = *newAddress
+	*a = newAddress
 
 	return nil
 }

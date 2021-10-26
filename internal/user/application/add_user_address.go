@@ -7,7 +7,7 @@ import (
 	uservo "ifoodish-store/internal/user/domain/valueobject"
 )
 
-func (s UserService) AddAddress(
+func (s UserService) AddUserAddress(
 	ctx context.Context,
 	userID uservo.UserID,
 	address userent.Address,

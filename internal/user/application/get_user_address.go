@@ -6,10 +6,10 @@ import (
 	uservo "ifoodish-store/internal/user/domain/valueobject"
 )
 
-func (s UserService) UpdateAddress(
+func (s UserService) GetUserAddress(
 	ctx context.Context,
 	userID uservo.UserID,
-	address userent.RegisteredAddress,
-) (err error) {
-	return s.repo.SaveUserAddress(ctx, userID, address)
+	addressID uservo.AddressID,
+) (address userent.RegisteredAddress, err error) {
+	return s.repo.GetUserAddress(ctx, userID, addressID)
 }

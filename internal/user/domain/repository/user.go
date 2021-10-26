@@ -10,7 +10,7 @@ type UserRepository interface {
 	GetUserByEmailAndPassword(ctx context.Context, email uservo.Email, password uservo.PasswordEncoded) (user userent.RegisteredUser, err error)
 
 	GetUserInfo(ctx context.Context, userID uservo.UserID) (user userent.RegisteredUser, err error)
-	AddUser(ctx context.Context, user userent.User) (userID uservo.UserID, err error)
+	AddUser(ctx context.Context, user userent.User, password uservo.PasswordEncoded) (userID uservo.UserID, err error)
 	SaveUser(ctx context.Context, user userent.RegisteredUser) (err error)
 	RemoveUser(ctx context.Context, userID uservo.UserID) (err error)
 	UpdatePassword(ctx context.Context, userID uservo.UserID, newPassword uservo.PasswordEncoded) (err error)

@@ -13,6 +13,7 @@ import (
 func (r UserSQLite3Repository) AddUser(
 	ctx context.Context,
 	user userent.User,
+	password uservo.PasswordEncoded,
 ) (userID uservo.UserID, err error) {
 
 	tx, err := r.db.GetTransaction(ctx)

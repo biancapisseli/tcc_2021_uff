@@ -1,14 +1,14 @@
-package userhttpctl
+package usersvc
 
 import (
 	"context"
 	uservo "ifoodish-store/internal/user/domain/valueobject"
 )
 
-func (c UserHTTPController) RemoveAddress(
+func (s UserService) RemoveUserAddress(
 	ctx context.Context,
 	userID uservo.UserID,
 	addressID uservo.AddressID,
 ) (err error) {
-	return c.repo.RemoveUserAddress(ctx, userID, addressID)
+	return s.repo.RemoveUserAddress(ctx, userID, addressID)
 }

@@ -36,7 +36,7 @@ func (c *Connection) GetTransaction(ctx context.Context) (*sqlx.Tx, error) {
 	tx, ok := interfaceValue.(*sqlx.Tx)
 	if !ok {
 		return nil, resperr.WithStatusCode(
-			errors.New("transaction incorrect type"),
+			errors.New("transaction with incorrect type"),
 			http.StatusInternalServerError,
 		)
 	}
@@ -47,10 +47,8 @@ func (c *Connection) GetTransaction(ctx context.Context) (*sqlx.Tx, error) {
 func (c *Connection) Commit(ctx context.Context) error {
 	tx, err := c.GetTransaction(ctx)
 	if err != nil {
-		return resperr.WithStatusCode(
-			fmt.Errorf("error trying to commit transaction: %w", err),
-			http.StatusInternalServerError,
-		)
+		return fmt.Errorf("error trying to commit transaction: %w", err)
+
 	}
 
 	err = tx.Commit()

@@ -17,13 +17,11 @@ type User struct {
 	Phone uservo.Phone    `json:"phone"`
 }
 
-func NewRegisteredUser(params RegisteredUser) (newUser *RegisteredUser, err error) {
-	newUser = new(RegisteredUser)
-	childUser, err := NewUser(params.User)
+func NewRegisteredUser(params RegisteredUser) (newUser RegisteredUser, err error) {
+	newUser.User, err = NewUser(params.User)
 	if err != nil {
 		return newUser, fmt.Errorf("error creating new registered user: %w", err)
 	}
-	newUser.User = childUser
 
 	newUser.ID, err = uservo.NewUserID(params.ID.String())
 	if err != nil {

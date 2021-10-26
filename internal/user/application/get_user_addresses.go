@@ -1,4 +1,4 @@
-package userhttpctl
+package usersvc
 
 import (
 	"context"
@@ -6,10 +6,10 @@ import (
 	uservo "ifoodish-store/internal/user/domain/valueobject"
 )
 
-func (c UserHTTPController) GetAddress(
+func (s UserService) GetUserAddresses(
 	ctx context.Context,
 	userID uservo.UserID,
 	addressID uservo.AddressID,
-) (address *userent.RegisteredAddress, err error) {
-	return c.repo.GetUserAddress(ctx, userID, addressID)
+) (addresses []userent.RegisteredAddress, err error) {
+	return s.repo.GetUserAddresses(ctx, userID)
 }
