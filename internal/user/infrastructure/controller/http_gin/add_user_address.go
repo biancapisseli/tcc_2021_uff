@@ -53,7 +53,6 @@ func (c UserHTTPGinController) AddUserAddress(echoCtx echo.Context) (err error) 
 		return fmt.Errorf("error adding new user address: %w", err)
 	}
 
-	echoCtx.JSON(http.StatusOK, resp)
+	return echoCtx.JSON(http.StatusOK, resp)
 
-	return nil
 }
