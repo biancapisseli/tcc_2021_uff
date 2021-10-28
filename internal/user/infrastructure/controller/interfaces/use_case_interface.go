@@ -31,13 +31,11 @@ type UserUseCases interface {
 	GetUserAddresses(
 		ctx context.Context,
 		userID uservo.UserID,
-		addressID uservo.AddressID,
 	) (addresses []userent.RegisteredAddress, err error)
 
 	GetUserInfo(
 		ctx context.Context,
 		userID uservo.UserID,
-		addressID uservo.AddressID,
 	) (userInfo userent.RegisteredUser, err error)
 
 	RegisterUser(

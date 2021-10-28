@@ -20,7 +20,7 @@ func (c UserHTTPGinController) AddUserAddress(echoCtx echo.Context) (err error) 
 		return resperr.WithCodeAndMessage(
 			fmt.Errorf("failed binding request uri: %w", err),
 			http.StatusBadRequest,
-			"ID de usuário não encontrado",
+			"os parametros da URL estão incorretos",
 		)
 	}
 
@@ -41,20 +41,17 @@ func (c UserHTTPGinController) AddUserAddress(echoCtx echo.Context) (err error) 
 		return fmt.Errorf("invalid address: %w", err)
 	}
 
-	var resp struct {
-		AddressID uservo.AddressID `json:"address_id"`
-	}
-
-	ctx := echoCtx.Request().Context()
-
-	if resp.AddressID, err = c.useCases.AddUserAddress(
-		ctx,
+	addressID, err := c.useCases.AddUserAddress(
+		echoCtx.Request().Context(),
 		userID,
 		address,
-	); err != nil {
-		return fmt.Errorf("error adding new user address: %w", err)
+	)
+	if err != nil {
+		return fmt.Errorf("failed use case: %w", err)
 	}
 
-	return echoCtx.JSON(http.StatusOK, resp)
-
+	return echoCtx.JSON(http.StatusOK, map[string]interface{}{
+		"message":    "Endereço adicionado com sucesso",
+		"address_id": addressID,
+	})
 }

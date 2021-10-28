@@ -26,7 +26,7 @@ func (c UserHTTPGinController) Register(router *echo.Group) {
 
 	router.Use(c.transactionMiddleware.Middleware)
 
-	router.POST("/user", c.RegisterUser)
+	router.POST("/register", c.RegisterUser)
 	router.GET("/user/:user_id", c.GetUserInfo)
 	router.PUT("/user/:user_id", c.UpdateUserInfo)
 	router.PUT("/user/:user_id/update_password", c.ChangePassword)

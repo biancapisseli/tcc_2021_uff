@@ -9,7 +9,6 @@ import (
 func (s UserService) GetUserAddresses(
 	ctx context.Context,
 	userID uservo.UserID,
-	addressID uservo.AddressID,
 ) (addresses []userent.RegisteredAddress, err error) {
 	return s.repo.GetUserAddresses(ctx, userID)
 }
