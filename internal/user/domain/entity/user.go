@@ -63,3 +63,21 @@ func (u *User) UnmarshalJSON(data []byte) error {
 	*u = newUser
 	return nil
 }
+
+func (u *RegisteredUser) UnmarshalJSON(data []byte) error {
+
+	type clone RegisteredUser
+	var userClone clone
+
+	if err := json.Unmarshal(data, &userClone); err != nil {
+		return fmt.Errorf("error unmarshalling registered user: %w", err)
+	}
+
+	newUser, err := NewRegisteredUser(RegisteredUser(userClone))
+	if err != nil {
+		return fmt.Errorf("error unmarshalling registered user: %w", err)
+	}
+
+	*u = newUser
+	return nil
+}

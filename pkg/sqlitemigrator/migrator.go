@@ -1,4 +1,4 @@
-package sqlite3
+package sqlitemigrator
 
 import (
 	"errors"
@@ -20,7 +20,7 @@ type migrator struct {
 	list      map[string][]string
 }
 
-func newMigrator(db *sqlx.DB, list map[string][]string) *migrator {
+func New(db *sqlx.DB, list map[string][]string) *migrator {
 	return &migrator{
 		db:        db,
 		attempted: false,
@@ -28,7 +28,7 @@ func newMigrator(db *sqlx.DB, list map[string][]string) *migrator {
 	}
 }
 
-func (m *migrator) run() (err error) {
+func (m *migrator) Run() (err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			switch v := r.(type) {

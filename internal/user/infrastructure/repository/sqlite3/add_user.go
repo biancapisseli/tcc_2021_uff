@@ -7,6 +7,7 @@ import (
 	uservo "ifoodish-store/internal/user/domain/valueobject"
 	"ifoodish-store/pkg/resperr"
 	"ifoodish-store/pkg/sqlite3"
+	"ifoodish-store/pkg/sqlxtx"
 	"net/http"
 )
 
@@ -16,7 +17,7 @@ func (r UserSQLite3Repository) AddUser(
 	password uservo.PasswordEncoded,
 ) (userID uservo.UserID, err error) {
 
-	tx, err := r.db.GetTransaction(ctx)
+	tx, err := sqlxtx.GetTransaction(ctx)
 	if err != nil {
 		return userID, fmt.Errorf(
 			"trying to get transaction to add new user to sqlite3 db: %w",

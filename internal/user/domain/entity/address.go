@@ -121,3 +121,21 @@ func (a *Address) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
+
+func (u *RegisteredAddress) UnmarshalJSON(data []byte) error {
+
+	type clone RegisteredAddress
+	var userClone clone
+
+	if err := json.Unmarshal(data, &userClone); err != nil {
+		return fmt.Errorf("error unmarshalling registered address: %w", err)
+	}
+
+	newAddress, err := NewRegisteredAddress(RegisteredAddress(userClone))
+	if err != nil {
+		return fmt.Errorf("error unmarshalling registered address: %w", err)
+	}
+
+	*u = newAddress
+	return nil
+}

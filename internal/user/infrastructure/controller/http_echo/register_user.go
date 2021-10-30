@@ -11,6 +11,8 @@ import (
 
 func (c UserHTTPGinController) RegisterUser(echoCtx echo.Context) (err error) {
 
+	reqCtx := echoCtx.Request().Context()
+
 	type passwordRawClone uservo.PasswordRaw
 	type userClone userent.User
 	var body struct {
@@ -43,7 +45,7 @@ func (c UserHTTPGinController) RegisterUser(echoCtx echo.Context) (err error) {
 	}
 
 	userID, err := c.useCases.RegisterUser(
-		echoCtx.Request().Context(),
+		reqCtx,
 		user,
 		password,
 		passwordConfirm,

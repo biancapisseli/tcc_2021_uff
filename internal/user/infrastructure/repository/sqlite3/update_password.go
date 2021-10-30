@@ -8,6 +8,7 @@ import (
 
 	uservo "ifoodish-store/internal/user/domain/valueobject"
 	"ifoodish-store/pkg/resperr"
+	"ifoodish-store/pkg/sqlxtx"
 )
 
 func (r UserSQLite3Repository) UpdatePassword(
@@ -15,7 +16,7 @@ func (r UserSQLite3Repository) UpdatePassword(
 	userID uservo.UserID,
 	newPassword uservo.PasswordEncoded,
 ) (err error) {
-	tx, err := r.db.GetTransaction(ctx)
+	tx, err := sqlxtx.GetTransaction(ctx)
 	if err != nil {
 		return fmt.Errorf(
 			"trying to get transaction to update sqlite3 user password: %w",

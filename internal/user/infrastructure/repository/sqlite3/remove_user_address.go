@@ -6,6 +6,7 @@ import (
 	"fmt"
 	uservo "ifoodish-store/internal/user/domain/valueobject"
 	"ifoodish-store/pkg/resperr"
+	"ifoodish-store/pkg/sqlxtx"
 	"net/http"
 )
 
@@ -14,7 +15,7 @@ func (r UserSQLite3Repository) RemoveUserAddress(
 	userID uservo.UserID,
 	addressID uservo.AddressID,
 ) (err error) {
-	tx, err := r.db.GetTransaction(ctx)
+	tx, err := sqlxtx.GetTransaction(ctx)
 	if err != nil {
 		return fmt.Errorf(
 			"trying to get transaction to delete sqlite3 user address: %w",

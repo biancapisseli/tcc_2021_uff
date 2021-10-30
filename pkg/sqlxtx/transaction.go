@@ -1,4 +1,4 @@
-package sqlite3
+package sqlxtx
 
 import (
 	"context"
@@ -12,8 +12,8 @@ import (
 
 type transactionKey struct{}
 
-func (c *Connection) BeginTransaction(ctx context.Context) (context.Context, error) {
-	tx, err := c.db.Beginx()
+func BeginTransaction(db *sqlx.DB, ctx context.Context) (context.Context, error) {
+	tx, err := db.Beginx()
 	if err != nil {
 		return ctx, resperr.WithStatusCode(
 			fmt.Errorf("error trying to begin a transaction: %w", err),
@@ -24,7 +24,7 @@ func (c *Connection) BeginTransaction(ctx context.Context) (context.Context, err
 	return context.WithValue(ctx, transactionKey{}, tx), nil
 }
 
-func (c *Connection) GetTransaction(ctx context.Context) (*sqlx.Tx, error) {
+func GetTransaction(ctx context.Context) (*sqlx.Tx, error) {
 	interfaceValue := ctx.Value(transactionKey{})
 	if interfaceValue == nil {
 		return nil, resperr.WithStatusCode(
@@ -44,8 +44,8 @@ func (c *Connection) GetTransaction(ctx context.Context) (*sqlx.Tx, error) {
 	return tx, nil
 }
 
-func (c *Connection) CommitTransaction(ctx context.Context) error {
-	tx, err := c.GetTransaction(ctx)
+func CommitTransaction(ctx context.Context) error {
+	tx, err := GetTransaction(ctx)
 	if err != nil {
 		return fmt.Errorf("error trying to commit transaction: %w", err)
 
@@ -62,8 +62,8 @@ func (c *Connection) CommitTransaction(ctx context.Context) error {
 	return nil
 }
 
-func (c *Connection) RollbackTransaction(ctx context.Context) error {
-	tx, err := c.GetTransaction(ctx)
+func RollbackTransaction(ctx context.Context) error {
+	tx, err := GetTransaction(ctx)
 	if err != nil {
 		return resperr.WithStatusCode(
 			fmt.Errorf("error trying to rollback transaction: %w", err),

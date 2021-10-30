@@ -2,17 +2,18 @@ package middleware
 
 import (
 	"fmt"
-	"ifoodish-store/pkg/sqlite3"
+	"ifoodish-store/pkg/sqlxtx"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 )
 
 type TransactionMiddleware struct {
-	conn *sqlite3.Connection
+	conn *sqlx.DB
 }
 
-func NewTransactionMiddleware(conn *sqlite3.Connection) TransactionMiddleware {
+func NewTransactionMiddleware(conn *sqlx.DB) TransactionMiddleware {
 	return TransactionMiddleware{
 		conn: conn,
 	}
@@ -23,7 +24,7 @@ func (m TransactionMiddleware) Middleware(next echo.HandlerFunc) echo.HandlerFun
 
 		parentCtx := echoCtx.Request().Context()
 
-		txCtx, err := m.conn.BeginTransaction(parentCtx)
+		txCtx, err := sqlxtx.BeginTransaction(m.conn, parentCtx)
 		if err != nil {
 			return fmt.Errorf("error beginning transaction middleware: %w", err)
 		}
@@ -32,7 +33,7 @@ func (m TransactionMiddleware) Middleware(next echo.HandlerFunc) echo.HandlerFun
 
 		defer func() {
 			if err != nil {
-				log.Warn(m.conn.RollbackTransaction(txCtx))
+				log.Warn(sqlxtx.RollbackTransaction(txCtx))
 			}
 		}()
 
@@ -40,6 +41,6 @@ func (m TransactionMiddleware) Middleware(next echo.HandlerFunc) echo.HandlerFun
 			return err
 		}
 
-		return m.conn.CommitTransaction(txCtx)
+		return sqlxtx.CommitTransaction(txCtx)
 	}
 }

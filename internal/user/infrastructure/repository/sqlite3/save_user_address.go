@@ -7,6 +7,7 @@ import (
 	userent "ifoodish-store/internal/user/domain/entity"
 	uservo "ifoodish-store/internal/user/domain/valueobject"
 	"ifoodish-store/pkg/resperr"
+	"ifoodish-store/pkg/sqlxtx"
 	"net/http"
 )
 
@@ -15,7 +16,7 @@ func (r UserSQLite3Repository) SaveUserAddress(
 	userID uservo.UserID,
 	address userent.RegisteredAddress,
 ) (err error) {
-	tx, err := r.db.GetTransaction(ctx)
+	tx, err := sqlxtx.GetTransaction(ctx)
 	if err != nil {
 		return fmt.Errorf(
 			"trying to get transaction to save sqlite3 user address: %w",

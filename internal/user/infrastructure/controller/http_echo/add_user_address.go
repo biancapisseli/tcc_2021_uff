@@ -3,8 +3,7 @@ package userhttpechoctl
 import (
 	"fmt"
 	userent "ifoodish-store/internal/user/domain/entity"
-	uservo "ifoodish-store/internal/user/domain/valueobject"
-	"ifoodish-store/pkg/resperr"
+	"ifoodish-store/pkg/jwt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -12,21 +11,11 @@ import (
 
 func (c UserHTTPGinController) AddUserAddress(echoCtx echo.Context) (err error) {
 
-	type userIDClone uservo.UserID
-	var uri struct {
-		UserID userIDClone `param:"user_id"`
-	}
-	if err := echoCtx.Bind(&uri); err != nil {
-		return resperr.WithCodeAndMessage(
-			fmt.Errorf("failed binding request uri: %w", err),
-			http.StatusBadRequest,
-			"os parametros da URL estão incorretos",
-		)
-	}
+	reqCtx := echoCtx.Request().Context()
 
-	userID, err := uservo.NewUserID(uservo.UserID(uri.UserID).String())
+	userID, err := jwt.GetUserID(reqCtx)
 	if err != nil {
-		return fmt.Errorf("invalid user id: %w", err)
+		return fmt.Errorf("failed to get user id: %w", err)
 	}
 
 	type addressClone userent.Address
@@ -38,14 +27,10 @@ func (c UserHTTPGinController) AddUserAddress(echoCtx echo.Context) (err error) 
 
 	address, err := userent.NewAddress(userent.Address(body))
 	if err != nil {
-		return fmt.Errorf("invalid address: %w", err)
+		return fmt.Errorf("invalid body: %w", err)
 	}
 
-	addressID, err := c.useCases.AddUserAddress(
-		echoCtx.Request().Context(),
-		userID,
-		address,
-	)
+	addressID, err := c.useCases.AddUserAddress(reqCtx, userID, address)
 	if err != nil {
 		return fmt.Errorf("failed use case: %w", err)
 	}

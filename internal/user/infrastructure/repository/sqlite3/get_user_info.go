@@ -7,6 +7,7 @@ import (
 	uservo "ifoodish-store/internal/user/domain/valueobject"
 	"ifoodish-store/pkg/resperr"
 	"ifoodish-store/pkg/sqlite3"
+	"ifoodish-store/pkg/sqlxtx"
 	"net/http"
 )
 
@@ -15,7 +16,7 @@ func (r UserSQLite3Repository) GetUserInfo(
 	userID uservo.UserID,
 	addressID uservo.AddressID,
 ) (userInfo userent.RegisteredUser, err error) {
-	tx, err := r.db.GetTransaction(ctx)
+	tx, err := sqlxtx.GetTransaction(ctx)
 	if err != nil {
 		return userInfo, fmt.Errorf(
 			"trying to get transaction to get sqlite3 user info: %w",
