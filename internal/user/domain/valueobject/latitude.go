@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	ErrLatitudeInvalidFormat = errors.New(" latitude should have a valid format")
+	ErrLatitudeInvalidFormat = errors.New("latitude should have a valid format")
 )
 
 type Latitude string

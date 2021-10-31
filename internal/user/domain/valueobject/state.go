@@ -14,8 +14,8 @@ const (
 )
 
 var (
-	ErrStateMaxLength = fmt.Errorf("state should have < %d characters", MaxStateLength)
-	ErrStateMinLength = fmt.Errorf("state should have > %d characters", MinStateLength)
+	ErrStateMaxLength = fmt.Errorf("state should have max %d characters", MaxStateLength)
+	ErrStateMinLength = fmt.Errorf("state should have min %d characters", MinStateLength)
 )
 
 type State string

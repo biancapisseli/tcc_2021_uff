@@ -14,8 +14,8 @@ const (
 )
 
 var (
-	ErrDistrictMaxLength = fmt.Errorf("district should have < %d characters", MaxDistrictLength)
-	ErrDistrictMinLength = fmt.Errorf("district should have > %d characters", MinDistrictLength)
+	ErrDistrictMaxLength = fmt.Errorf("district should have max %d characters", MaxDistrictLength)
+	ErrDistrictMinLength = fmt.Errorf("district should have min %d characters", MinDistrictLength)
 )
 
 type District string

@@ -14,8 +14,8 @@ const (
 )
 
 var (
-	ErrStreetMaxLength = fmt.Errorf("street should have < %d characters", MaxStreetLength)
-	ErrStreetMinLength = fmt.Errorf("street should have > %d characters", MinStreetLength)
+	ErrStreetMaxLength = fmt.Errorf("street should have max %d characters", MaxStreetLength)
+	ErrStreetMinLength = fmt.Errorf("street should have min %d characters", MinStreetLength)
 )
 
 type Street string

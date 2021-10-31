@@ -14,8 +14,8 @@ const (
 )
 
 var (
-	ErrCityMaxLength = fmt.Errorf("city should have < %d characters", MaxCityLength)
-	ErrCityMinLength = fmt.Errorf("city should have > %d characters", MinCityLength)
+	ErrCityMaxLength = fmt.Errorf("city should have max %d characters", MaxCityLength)
+	ErrCityMinLength = fmt.Errorf("city should have min %d characters", MinCityLength)
 )
 
 type City string

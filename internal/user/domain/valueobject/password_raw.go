@@ -14,8 +14,8 @@ const (
 )
 
 var (
-	ErrRawPasswordMaxLength = fmt.Errorf("raw password should have < %d characters", MaxRawPasswordLength)
-	ErrRawPasswordMinLength = fmt.Errorf("raw password should have > %d characters", MinRawPasswordLength)
+	ErrRawPasswordMaxLength = fmt.Errorf("raw password should have max %d characters", MaxRawPasswordLength)
+	ErrRawPasswordMinLength = fmt.Errorf("raw password should have min %d characters", MinRawPasswordLength)
 )
 
 type PasswordRaw string

@@ -15,7 +15,7 @@ const (
 )
 
 var (
-	ErrEmailMaxLength     = fmt.Errorf("email should have < %d characters", MaxEmailLength)
+	ErrEmailMaxLength     = fmt.Errorf("email should have max %d characters", MaxEmailLength)
 	ErrEmailInvalidFormat = fmt.Errorf("email should have a valid format")
 )
 

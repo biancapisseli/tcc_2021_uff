@@ -7,6 +7,7 @@ import (
 	"github.com/carlmjohnson/resperr"
 
 	"net/http"
+
 	valid "github.com/asaskevich/govalidator"
 )
 
@@ -16,8 +17,8 @@ const (
 )
 
 var (
-	ErrUserNameMaxLength        = fmt.Errorf("user name should have < %d characters", MaxStreetLength)
-	ErrUserNameMinLength        = fmt.Errorf("user name should have > %d characters", MinStreetLength)
+	ErrUserNameMaxLength        = fmt.Errorf("user name should have max %d characters", MaxStreetLength)
+	ErrUserNameMinLength        = fmt.Errorf("user name should have min %d characters", MinStreetLength)
 	ErrUserNameInvalidCharacter = errors.New("user name should have only letters and spaces")
 )
 

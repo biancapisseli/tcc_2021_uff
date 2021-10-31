@@ -14,8 +14,8 @@ const (
 )
 
 var (
-	ErrAddressNumberMaxLength = fmt.Errorf("address_number should have < %d characters", MaxAddressNumberLength)
-	ErrAddressNumberMinLength = fmt.Errorf("address_number should have > %d characters", MinAddressNumberLength)
+	ErrAddressNumberMaxLength = fmt.Errorf("address_number should have max %d characters", MaxAddressNumberLength)
+	ErrAddressNumberMinLength = fmt.Errorf("address_number should have min %d characters", MinAddressNumberLength)
 )
 
 type AddressNumber string

@@ -9,13 +9,13 @@ import (
 )
 
 const (
-	MaxPhoneLength = 11
+	MaxPhoneLength = 13
 	MinPhoneLength = 10
 )
 
 var (
-	ErrPhoneMaxLength = fmt.Errorf("phone should have < %d characters", MaxPhoneLength)
-	ErrPhoneMinLength = fmt.Errorf("phone should have > %d characters", MinPhoneLength)
+	ErrPhoneMaxLength = fmt.Errorf("phone should have max %d characters", MaxPhoneLength)
+	ErrPhoneMinLength = fmt.Errorf("phone should have min %d characters", MinPhoneLength)
 )
 
 type Phone string

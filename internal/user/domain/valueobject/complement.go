@@ -13,7 +13,7 @@ const (
 )
 
 var (
-	ErrComplementMaxLength = fmt.Errorf("complement should have < %d characters", MaxComplementLength)
+	ErrComplementMaxLength = fmt.Errorf("complement should have max %d characters", MaxComplementLength)
 )
 
 type Complement string
