@@ -23,10 +23,7 @@ func (c UserHTTPGinController) UpdateUserInfo(echoCtx echo.Context) (err error) 
 		return fmt.Errorf("failed binding request body: %w", err)
 	}
 
-	user, err := userent.NewRegisteredUser(userent.RegisteredUser{
-		ID:   userID,
-		User: userent.User(body),
-	})
+	user, err := userent.NewRegisteredUser(userID.String(), body)
 	if err != nil {
 		return fmt.Errorf("invalid user: %w", err)
 	}
