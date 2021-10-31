@@ -10,7 +10,6 @@ import (
 func (s UserUseCases) GetUserInfo(
 	ctx context.Context,
 	userID uservo.UserID,
-	addressID uservo.AddressID,
 ) (userInfo userent.RegisteredUser, err error) {
 	userInfo, err = s.repo.GetUserInfo(ctx, userID)
 	if err != nil {

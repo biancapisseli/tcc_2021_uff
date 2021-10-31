@@ -27,8 +27,13 @@ func (s UserUseCases) RegisterUser(
 
 	encodedPassword, err := s.passwordEncoder.EncodePassword(password)
 	if err != nil {
-		return userID, fmt.Errorf("error encoding user's current password: %w", err)
+		return userID, fmt.Errorf("error encoding new user's password: %w", err)
 	}
 
-	return s.repo.AddUser(ctx, user, encodedPassword)
+	userID, err = s.repo.AddUser(ctx, user, encodedPassword)
+	if err != nil {
+		return userID, fmt.Errorf("error adding a new user: %w", err)
+	}
+
+	return userID, nil
 }
