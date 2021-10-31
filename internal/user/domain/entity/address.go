@@ -26,77 +26,76 @@ type Address struct {
 	Longitude  uservo.Longitude     `json:"longitude"`
 }
 
-func NewRegisteredAddress(params RegisteredAddress) (newAddress RegisteredAddress, err error) {
-	newAddress.Address, err = NewAddress(params.Address)
-	if err != nil {
-		return newAddress, fmt.Errorf("error creating new registered address: %w", err)
-	}
-
-	newAddress.ID, err = uservo.NewAddressID(int64(params.ID))
+func NewRegisteredAddress(id int64, address Address) (newAddress RegisteredAddress, err error) {
+	newAddress.ID, err = uservo.NewAddressID(id)
 	if err != nil {
 		return newAddress, fmt.Errorf("error creating new registered address id: %w", err)
 	}
+	newAddress.Address = address
 	return newAddress, nil
 }
 
-func NewAddress(address Address) (newAddress Address, err error) {
-	newAddress.Street, err = uservo.NewStreet(string(address.Street))
+func NewAddress(
+	street, district, city, state, complement,
+	number, zipcode, latitude, longitude string,
+) (newAddress Address, err error) {
+	newAddress.Street, err = uservo.NewStreet(string(street))
 	if err != nil {
 		return newAddress, fmt.Errorf(
 			"error creating new address street: %w",
 			err,
 		)
 	}
-	newAddress.District, err = uservo.NewDistrict(string(address.District))
+	newAddress.District, err = uservo.NewDistrict(district)
 	if err != nil {
 		return newAddress, fmt.Errorf(
 			"error creating new address district: %w",
 			err,
 		)
 	}
-	newAddress.City, err = uservo.NewCity(string(address.City))
+	newAddress.City, err = uservo.NewCity(city)
 	if err != nil {
 		return newAddress, fmt.Errorf(
 			"error creating new address city: %w",
 			err,
 		)
 	}
-	newAddress.State, err = uservo.NewState(string(address.State))
+	newAddress.State, err = uservo.NewState(state)
 	if err != nil {
 		return newAddress, fmt.Errorf(
 			"error creating new address state: %w",
 			err,
 		)
 	}
-	newAddress.Complement, err = uservo.NewComplement(string(address.Complement))
+	newAddress.Complement, err = uservo.NewComplement(complement)
 	if err != nil {
 		return newAddress, fmt.Errorf(
 			"error creating new address complement: %w",
 			err,
 		)
 	}
-	newAddress.Number, err = uservo.NewAddressNumber(string(address.Number))
+	newAddress.Number, err = uservo.NewAddressNumber(number)
 	if err != nil {
 		return newAddress, fmt.Errorf(
 			"error creating new address number: %w",
 			err,
 		)
 	}
-	newAddress.Zipcode, err = uservo.NewZipcode(string(address.Zipcode))
+	newAddress.Zipcode, err = uservo.NewZipcode(zipcode)
 	if err != nil {
 		return newAddress, fmt.Errorf(
 			"error creating new address zipcode: %w",
 			err,
 		)
 	}
-	newAddress.Latitude, err = uservo.NewLatitude(string(address.Latitude))
+	newAddress.Latitude, err = uservo.NewLatitude(latitude)
 	if err != nil {
 		return newAddress, fmt.Errorf(
 			"error creating new address latitude: %w",
 			err,
 		)
 	}
-	newAddress.Longitude, err = uservo.NewLongitude(string(address.Longitude))
+	newAddress.Longitude, err = uservo.NewLongitude(longitude)
 	if err != nil {
 		return newAddress, fmt.Errorf(
 			"error creating new address longitude: %w",
@@ -115,7 +114,17 @@ func (a *Address) UnmarshalJSON(data []byte) error {
 		return fmt.Errorf("error unmarshalling address: %w", err)
 	}
 
-	newAddress, err := NewAddress(Address(addressClone))
+	newAddress, err := NewAddress(
+		addressClone.Street.String(),
+		addressClone.District.String(),
+		addressClone.City.String(),
+		addressClone.State.String(),
+		addressClone.Complement.String(),
+		addressClone.Number.String(),
+		addressClone.Zipcode.String(),
+		addressClone.Latitude.String(),
+		addressClone.Longitude.String(),
+	)
 	if err != nil {
 		return fmt.Errorf("error unmarshalling address: %w", err)
 	}
@@ -133,7 +142,7 @@ func (u *RegisteredAddress) UnmarshalJSON(data []byte) error {
 	}
 
 	var registered struct {
-		AddressID uservo.AddressID `json:"id"`
+		AddressID int64 `json:"id"`
 	}
 
 	if err := json.Unmarshal(data, &registered); err != nil {
@@ -143,10 +152,7 @@ func (u *RegisteredAddress) UnmarshalJSON(data []byte) error {
 		)
 	}
 
-	newRegisteredAddress, err := NewRegisteredAddress(RegisteredAddress{
-		ID:      uservo.AddressID(registered.AddressID),
-		Address: address,
-	})
+	newRegisteredAddress, err := NewRegisteredAddress(registered.AddressID, address)
 	if err != nil {
 		return fmt.Errorf("error unmarshalling registered address: %w", err)
 	}

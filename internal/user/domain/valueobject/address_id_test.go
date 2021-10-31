@@ -6,15 +6,22 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const (
-	validID   = 50
-	invalidID = -1
-)
-
 func TestAddressIDValid(t *testing.T) {
 	require := require.New(t)
 
-	id, err := NewAddressID(validID)
+	id, err := NewAddressID(1)
+	require.Nil(err)
+	require.NotEmpty(id)
+
+	id, err = NewAddressID(50)
+	require.Nil(err)
+	require.NotEmpty(id)
+
+	id, err = NewAddressID(100)
+	require.Nil(err)
+	require.NotEmpty(id)
+
+	id, err = NewAddressID(9999999)
 	require.Nil(err)
 	require.NotEmpty(id)
 }
@@ -22,36 +29,51 @@ func TestAddressIDValid(t *testing.T) {
 func TestAddressIDInvalid(t *testing.T) {
 	require := require.New(t)
 
-	id, err := NewAddressID(invalidID)
+	id, err := NewAddressID(-1)
 	require.ErrorIs(err, ErrInvalidAddressID)
 	require.Zero(id)
+
+	id, err = NewAddressID(0)
+	require.ErrorIs(err, ErrInvalidAddressID)
+	require.Zero(id)
+
+	id, err = NewAddressID(-100)
+	require.ErrorIs(err, ErrInvalidAddressID)
+	require.Zero(id)
+
 }
 
 func TestEqualAddressID(t *testing.T) {
 	require := require.New(t)
 
-	AddressID, err := NewAddressID(validID)
+	AddressID1, err := NewAddressID(50)
 	require.Nil(err)
 
-	AddressIDEqual, errEqual := NewAddressID(validID)
-	require.Nil(errEqual)
+	AddressID2, err := NewAddressID(50)
+	require.Nil(err)
 
-	AddressIDInt, errInt := NewAddressID(50)
-	require.Nil(errInt)
+	require.True(AddressID1.Equals(AddressID2))
 
-	require.True(AddressID.Equals(AddressIDEqual))
-	require.True(AddressID.Equals(AddressIDInt))
 }
 
 func TestNotEqualAddressID(t *testing.T) {
 	require := require.New(t)
 
-	AddressID, err := NewAddressID(validID)
+	AddressID, err := NewAddressID(50)
 	require.Nil(err)
 
-	AddressIDEqual, errEqual := NewAddressID(12)
-	require.Nil(errEqual)
+	AddressID2, err := NewAddressID(12)
+	require.Nil(err)
 
-	require.False(AddressID.Equals(AddressIDEqual))
+	require.False(AddressID.Equals(AddressID2))
 
+	AddressID3, err := NewAddressID(500)
+	require.Nil(err)
+
+	require.False(AddressID.Equals(AddressID3))
+
+	AddressID4, err := NewAddressID(10)
+	require.Nil(err)
+
+	require.False(AddressID.Equals(AddressID4))
 }

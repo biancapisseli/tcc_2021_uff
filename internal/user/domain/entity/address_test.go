@@ -14,147 +14,250 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+type addressTestCase struct {
+	street     string
+	district   string
+	city       string
+	state      string
+	complement string
+	number     string
+	zipcode    string
+	latitude   string
+	longitude  string
+
+	expectedErr error
+}
+
+type registeredAddressTestCase struct {
+	addressTestCase
+	id int64
+}
+
 var (
-	validAddress = userent.Address{
-		Street:     "Street ABCD",
-		District:   "Espirito Santo",
-		City:       "Jose dos Campos",
-		State:      "Rio de Janeiro",
-		Complement: "Complement",
-		Number:     "11111",
-		Zipcode:    "23970000",
-		Latitude:   "-23.307577",
-		Longitude:  "-44.754146",
+	validAddressTestCase = addressTestCase{
+		street:     "Street ABCD",
+		district:   "Espirito Santo",
+		city:       "Jose dos Campos",
+		state:      "Rio de Janeiro",
+		complement: "Complement",
+		number:     "11111",
+		zipcode:    "23970000",
+		latitude:   "-23.307577",
+		longitude:  "-44.754146",
+
+		expectedErr: nil,
 	}
 )
 
+func addressTestCaseCompare(
+	require *require.Assertions,
+	address userent.Address,
+	tc addressTestCase,
+) {
+	require.Equal(tc.street, address.Street.String())
+	require.Equal(tc.district, address.District.String())
+	require.Equal(tc.city, address.City.String())
+	require.Equal(tc.state, address.State.String())
+	require.Equal(tc.complement, address.Complement.String())
+	require.Equal(tc.number, address.Number.String())
+	require.Equal(tc.zipcode, address.Zipcode.String())
+	require.Equal(tc.latitude, address.Latitude.String())
+	require.Equal(tc.longitude, address.Longitude.String())
+}
+
 func TestAddressValid(t *testing.T) {
 	require := require.New(t)
-	address, err := userent.NewAddress(validAddress)
+	address, err := userent.NewAddress(
+		validAddressTestCase.street,
+		validAddressTestCase.district,
+		validAddressTestCase.city,
+		validAddressTestCase.state,
+		validAddressTestCase.complement,
+		validAddressTestCase.number,
+		validAddressTestCase.zipcode,
+		validAddressTestCase.latitude,
+		validAddressTestCase.longitude,
+	)
 	require.Nil(err)
-	require.NotEmpty(address)
+	addressTestCaseCompare(require, address, validAddressTestCase)
 }
 
 func TestAddressInvalid(t *testing.T) {
 	require := require.New(t)
 
-	type testIterator struct {
-		address userent.Address
-		err     error
-	}
+	addresses := []addressTestCase{{
+		street:      strings.Repeat("a", uservo.MinStreetLength-1),
+		district:    validAddressTestCase.district,
+		city:        validAddressTestCase.city,
+		state:       validAddressTestCase.state,
+		complement:  validAddressTestCase.complement,
+		number:      validAddressTestCase.number,
+		zipcode:     validAddressTestCase.zipcode,
+		latitude:    validAddressTestCase.latitude,
+		longitude:   validAddressTestCase.longitude,
+		expectedErr: uservo.ErrStreetMinLength,
+	}, {
+		street:      strings.Repeat("a", uservo.MaxStreetLength+1),
+		district:    validAddressTestCase.district,
+		city:        validAddressTestCase.city,
+		state:       validAddressTestCase.state,
+		complement:  validAddressTestCase.complement,
+		number:      validAddressTestCase.number,
+		zipcode:     validAddressTestCase.zipcode,
+		latitude:    validAddressTestCase.latitude,
+		longitude:   validAddressTestCase.longitude,
+		expectedErr: uservo.ErrStreetMaxLength,
+	}, {
+		street:      validAddressTestCase.street,
+		district:    strings.Repeat("a", uservo.MinDistrictLength-1),
+		city:        validAddressTestCase.city,
+		state:       validAddressTestCase.state,
+		complement:  validAddressTestCase.complement,
+		number:      validAddressTestCase.number,
+		zipcode:     validAddressTestCase.zipcode,
+		latitude:    validAddressTestCase.latitude,
+		longitude:   validAddressTestCase.longitude,
+		expectedErr: uservo.ErrDistrictMinLength,
+	}, {
+		street:      validAddressTestCase.street,
+		district:    strings.Repeat("a", uservo.MaxDistrictLength+1),
+		city:        validAddressTestCase.city,
+		state:       validAddressTestCase.state,
+		complement:  validAddressTestCase.complement,
+		number:      validAddressTestCase.number,
+		zipcode:     validAddressTestCase.zipcode,
+		latitude:    validAddressTestCase.latitude,
+		longitude:   validAddressTestCase.longitude,
+		expectedErr: uservo.ErrDistrictMaxLength,
+	}, {
+		street:      validAddressTestCase.street,
+		district:    validAddressTestCase.district,
+		city:        strings.Repeat("a", uservo.MinCityLength-1),
+		state:       validAddressTestCase.state,
+		complement:  validAddressTestCase.complement,
+		number:      validAddressTestCase.number,
+		zipcode:     validAddressTestCase.zipcode,
+		latitude:    validAddressTestCase.latitude,
+		longitude:   validAddressTestCase.longitude,
+		expectedErr: uservo.ErrCityMinLength,
+	}, {
+		street:      validAddressTestCase.street,
+		district:    validAddressTestCase.district,
+		city:        strings.Repeat("a", uservo.MaxCityLength+1),
+		state:       validAddressTestCase.state,
+		complement:  validAddressTestCase.complement,
+		number:      validAddressTestCase.number,
+		zipcode:     validAddressTestCase.zipcode,
+		latitude:    validAddressTestCase.latitude,
+		longitude:   validAddressTestCase.longitude,
+		expectedErr: uservo.ErrCityMaxLength,
+	}, {
+		street:      validAddressTestCase.street,
+		district:    validAddressTestCase.district,
+		city:        validAddressTestCase.city,
+		state:       strings.Repeat("a", uservo.MinStateLength-1),
+		complement:  validAddressTestCase.complement,
+		number:      validAddressTestCase.number,
+		zipcode:     validAddressTestCase.zipcode,
+		latitude:    validAddressTestCase.latitude,
+		longitude:   validAddressTestCase.longitude,
+		expectedErr: uservo.ErrStateMinLength,
+	}, {
+		street:      validAddressTestCase.street,
+		district:    validAddressTestCase.district,
+		city:        validAddressTestCase.city,
+		state:       strings.Repeat("a", uservo.MaxStateLength+1),
+		complement:  validAddressTestCase.complement,
+		number:      validAddressTestCase.number,
+		zipcode:     validAddressTestCase.zipcode,
+		latitude:    validAddressTestCase.latitude,
+		longitude:   validAddressTestCase.longitude,
+		expectedErr: uservo.ErrStateMaxLength,
+	}, {
+		street:      validAddressTestCase.street,
+		district:    validAddressTestCase.district,
+		city:        validAddressTestCase.city,
+		state:       validAddressTestCase.state,
+		complement:  strings.Repeat("a", uservo.MaxComplementLength+1),
+		number:      validAddressTestCase.number,
+		zipcode:     validAddressTestCase.zipcode,
+		latitude:    validAddressTestCase.latitude,
+		longitude:   validAddressTestCase.longitude,
+		expectedErr: uservo.ErrComplementMaxLength,
+	}, {
+		street:      validAddressTestCase.street,
+		district:    validAddressTestCase.district,
+		city:        validAddressTestCase.city,
+		state:       validAddressTestCase.state,
+		complement:  validAddressTestCase.complement,
+		number:      strings.Repeat("a", uservo.MinAddressNumberLength-1),
+		zipcode:     validAddressTestCase.zipcode,
+		latitude:    validAddressTestCase.latitude,
+		longitude:   validAddressTestCase.longitude,
+		expectedErr: uservo.ErrAddressNumberMinLength,
+	}, {
+		street:      validAddressTestCase.street,
+		district:    validAddressTestCase.district,
+		city:        validAddressTestCase.city,
+		state:       validAddressTestCase.state,
+		complement:  validAddressTestCase.complement,
+		number:      strings.Repeat("a", uservo.MaxAddressNumberLength+1),
+		zipcode:     validAddressTestCase.zipcode,
+		latitude:    validAddressTestCase.latitude,
+		longitude:   validAddressTestCase.longitude,
+		expectedErr: uservo.ErrAddressNumberMaxLength,
+	}, {
+		street:      validAddressTestCase.street,
+		district:    validAddressTestCase.district,
+		city:        validAddressTestCase.city,
+		state:       validAddressTestCase.state,
+		complement:  validAddressTestCase.complement,
+		number:      validAddressTestCase.number,
+		zipcode:     strings.Repeat("1", uservo.ZipcodeLength+1),
+		latitude:    validAddressTestCase.latitude,
+		longitude:   validAddressTestCase.longitude,
+		expectedErr: uservo.ErrZipcodeLength,
+	}, {
+		street:      validAddressTestCase.street,
+		district:    validAddressTestCase.district,
+		city:        validAddressTestCase.city,
+		state:       validAddressTestCase.state,
+		complement:  validAddressTestCase.complement,
+		number:      validAddressTestCase.number,
+		zipcode:     strings.Repeat("a", uservo.ZipcodeLength),
+		latitude:    validAddressTestCase.latitude,
+		longitude:   validAddressTestCase.longitude,
+		expectedErr: uservo.ErrZipcodeNotNumeric,
+	}, {
+		street:      validAddressTestCase.street,
+		district:    validAddressTestCase.district,
+		city:        validAddressTestCase.city,
+		state:       validAddressTestCase.state,
+		complement:  validAddressTestCase.complement,
+		number:      validAddressTestCase.number,
+		zipcode:     validAddressTestCase.zipcode,
+		latitude:    strings.Repeat("a", 5),
+		longitude:   validAddressTestCase.longitude,
+		expectedErr: uservo.ErrLatitudeInvalidFormat,
+	}, {
+		street:      validAddressTestCase.street,
+		district:    validAddressTestCase.district,
+		city:        validAddressTestCase.city,
+		state:       validAddressTestCase.state,
+		complement:  validAddressTestCase.complement,
+		number:      validAddressTestCase.number,
+		zipcode:     validAddressTestCase.zipcode,
+		latitude:    validAddressTestCase.latitude,
+		longitude:   strings.Repeat("a", 5),
+		expectedErr: uservo.ErrLongitudeInvalidFormat,
+	}}
 
-	addresses := []testIterator{}
-
-	example := validAddress
-	example.Street = uservo.Street(strings.Repeat("a", uservo.MinStreetLength-1))
-	addresses = append(addresses, testIterator{
-		address: example,
-		err:     uservo.ErrStreetMinLength,
-	})
-
-	example = validAddress
-	example.Street = uservo.Street(strings.Repeat("a", uservo.MaxStreetLength+1))
-	addresses = append(addresses, testIterator{
-		address: example,
-		err:     uservo.ErrStreetMaxLength,
-	})
-
-	// District
-	example = validAddress
-	example.District = uservo.District(strings.Repeat("a", uservo.MinDistrictLength-1))
-	addresses = append(addresses, testIterator{
-		address: example,
-		err:     uservo.ErrDistrictMinLength,
-	})
-
-	example = validAddress
-	example.District = uservo.District(strings.Repeat("a", uservo.MaxDistrictLength+1))
-	addresses = append(addresses, testIterator{
-		address: example,
-		err:     uservo.ErrDistrictMaxLength,
-	})
-	// City
-	example = validAddress
-	example.City = uservo.City(strings.Repeat("a", uservo.MinCityLength-1))
-	addresses = append(addresses, testIterator{
-		address: example,
-		err:     uservo.ErrCityMinLength,
-	})
-
-	example = validAddress
-	example.City = uservo.City(strings.Repeat("a", uservo.MaxCityLength+1))
-	addresses = append(addresses, testIterator{
-		address: example,
-		err:     uservo.ErrCityMaxLength,
-	})
-	// State
-	example = validAddress
-	example.State = uservo.State(strings.Repeat("a", uservo.MinStateLength-1))
-	addresses = append(addresses, testIterator{
-		address: example,
-		err:     uservo.ErrStateMinLength,
-	})
-
-	example = validAddress
-	example.State = uservo.State(strings.Repeat("a", uservo.MaxStateLength+1))
-	addresses = append(addresses, testIterator{
-		address: example,
-		err:     uservo.ErrStateMaxLength,
-	})
-	// Complement
-	example = validAddress
-	example.Complement = uservo.Complement(strings.Repeat("a", uservo.MaxComplementLength+1))
-	addresses = append(addresses, testIterator{
-		address: example,
-		err:     uservo.ErrComplementMaxLength,
-	})
-	// Number
-	example = validAddress
-	example.Number = uservo.AddressNumber(strings.Repeat("a", uservo.MinAddressNumberLength-1))
-	addresses = append(addresses, testIterator{
-		address: example,
-		err:     uservo.ErrAddressNumberMinLength,
-	})
-
-	example = validAddress
-	example.Number = uservo.AddressNumber(strings.Repeat("a", uservo.MaxAddressNumberLength+1))
-	addresses = append(addresses, testIterator{
-		address: example,
-		err:     uservo.ErrAddressNumberMaxLength,
-	})
-	// Zipcode
-	example = validAddress
-	example.Zipcode = uservo.Zipcode(strings.Repeat("1", uservo.ZipcodeLength+1))
-	addresses = append(addresses, testIterator{
-		address: example,
-		err:     uservo.ErrZipcodeLength,
-	})
-	example = validAddress
-	example.Zipcode = uservo.Zipcode(strings.Repeat("a", uservo.ZipcodeLength))
-	addresses = append(addresses, testIterator{
-		address: example,
-		err:     uservo.ErrZipcodeNotNumeric,
-	})
-
-	// Latitude
-	example = validAddress
-	example.Latitude = uservo.Latitude(strings.Repeat("a", 5))
-	addresses = append(addresses, testIterator{
-		address: example,
-		err:     uservo.ErrLatitudeInvalidFormat,
-	})
-
-	// Longitude
-	example = validAddress
-	example.Longitude = uservo.Longitude(strings.Repeat("a", 5))
-	addresses = append(addresses, testIterator{
-		address: example,
-		err:     uservo.ErrLongitudeInvalidFormat,
-	})
-
-	for _, it := range addresses {
-		_, err := userent.NewAddress(it.address)
-		require.ErrorIs(err, it.err)
+	for i, it := range addresses {
+		_, err := userent.NewAddress(
+			it.street, it.district, it.city, it.state, it.complement,
+			it.number, it.zipcode, it.latitude, it.longitude,
+		)
+		require.ErrorIs(err, it.expectedErr, "index %d", i)
 	}
 
 }
@@ -162,32 +265,46 @@ func TestAddressInvalid(t *testing.T) {
 func TestRegisteredAddressValid(t *testing.T) {
 	require := require.New(t)
 
-	ex := userent.RegisteredAddress{}
-	ex.Address = validAddress
-	ex.ID = 50
-
-	address, err := userent.NewRegisteredAddress(ex)
+	address, err := userent.NewAddress(
+		validAddressTestCase.street,
+		validAddressTestCase.district,
+		validAddressTestCase.city,
+		validAddressTestCase.state,
+		validAddressTestCase.complement,
+		validAddressTestCase.number,
+		validAddressTestCase.zipcode,
+		validAddressTestCase.latitude,
+		validAddressTestCase.longitude,
+	)
 	require.Nil(err)
-	require.NotEmpty(address)
+	addressTestCaseCompare(require, address, validAddressTestCase)
+
+	regAddress, err := userent.NewRegisteredAddress(50, address)
+	require.Nil(err)
+	addressTestCaseCompare(require, regAddress.Address, validAddressTestCase)
+	require.Equal("50", regAddress.ID.String())
 }
 
 func TestRegisteredAddressInvalidID(t *testing.T) {
 	require := require.New(t)
 
-	ex := userent.RegisteredAddress{}
-	ex.Address = validAddress
-	ex.ID = 0
-	_, err := userent.NewRegisteredAddress(ex)
-	require.ErrorIs(err, uservo.ErrInvalidAddressID)
+	for _, it := range []registeredAddressTestCase{{
+		addressTestCase: validAddressTestCase,
+		id:              0,
+	}, {
+		addressTestCase: validAddressTestCase,
+		id:              -10,
+	}} {
+		address, err := userent.NewAddress(
+			it.street, it.district, it.city, it.state, it.complement,
+			it.number, it.zipcode, it.latitude, it.longitude,
+		)
+		require.Nil(err)
+		addressTestCaseCompare(require, address, validAddressTestCase)
 
-	ex.ID = -10
-	_, err = userent.NewRegisteredAddress(ex)
-	require.ErrorIs(err, uservo.ErrInvalidAddressID)
-
-	ex.City = uservo.City(strings.Repeat("a", uservo.MinCityLength-1))
-	_, err = userent.NewRegisteredAddress(ex)
-	require.ErrorIs(err, uservo.ErrCityMinLength)
-
+		_, err = userent.NewRegisteredAddress(it.id, address)
+		require.ErrorIs(err, uservo.ErrInvalidAddressID)
+	}
 }
 
 func TestJSONUnmarshallingAddressSuccess(t *testing.T) {

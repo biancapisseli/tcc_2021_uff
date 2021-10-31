@@ -20,9 +20,8 @@ func (c UserHTTPGinController) RemoveUserAddress(echoCtx echo.Context) (err erro
 		return fmt.Errorf("failed to get user id: %w", err)
 	}
 
-	type addressIDClone uservo.AddressID
 	var uri struct {
-		AddressID addressIDClone `param:"address_id"`
+		AddressID int64 `param:"address_id"`
 	}
 	if err := echoCtx.Bind(&uri); err != nil {
 		return resperr.WithCodeAndMessage(
@@ -32,7 +31,7 @@ func (c UserHTTPGinController) RemoveUserAddress(echoCtx echo.Context) (err erro
 		)
 	}
 
-	addressID, err := uservo.NewAddressID(int64(uri.AddressID))
+	addressID, err := uservo.NewAddressID(uri.AddressID)
 	if err != nil {
 		return fmt.Errorf("invalid address id: %w", err)
 	}

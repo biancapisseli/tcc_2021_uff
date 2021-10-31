@@ -18,19 +18,12 @@ func (c UserHTTPGinController) AddUserAddress(echoCtx echo.Context) (err error) 
 		return fmt.Errorf("failed to get user id: %w", err)
 	}
 
-	type addressClone userent.Address
-	var body addressClone
-
+	var body userent.Address
 	if err := echoCtx.Bind(&body); err != nil {
 		return fmt.Errorf("failed binding request body: %w", err)
 	}
 
-	address, err := userent.NewAddress(userent.Address(body))
-	if err != nil {
-		return fmt.Errorf("invalid body: %w", err)
-	}
-
-	addressID, err := c.useCases.AddUserAddress(reqCtx, userID, address)
+	addressID, err := c.useCases.AddUserAddress(reqCtx, userID, body)
 	if err != nil {
 		return fmt.Errorf("failed use case: %w", err)
 	}

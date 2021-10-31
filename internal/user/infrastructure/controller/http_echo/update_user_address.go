@@ -22,12 +22,7 @@ func (c UserHTTPGinController) UpdateUserAddress(echoCtx echo.Context) (err erro
 		return fmt.Errorf("failed binding request body: %w", err)
 	}
 
-	address, err := userent.NewRegisteredAddress(userent.RegisteredAddress(body))
-	if err != nil {
-		return fmt.Errorf("invalid body: %w", err)
-	}
-
-	if err := c.useCases.UpdateUserAddress(reqCtx, userID, address); err != nil {
+	if err := c.useCases.UpdateUserAddress(reqCtx, userID, body); err != nil {
 		return fmt.Errorf("failed use case: %w", err)
 	}
 

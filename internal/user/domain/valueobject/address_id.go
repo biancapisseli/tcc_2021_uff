@@ -2,6 +2,7 @@ package uservo
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/carlmjohnson/resperr"
 
@@ -14,8 +15,12 @@ var (
 
 type AddressID int64
 
-func (uid AddressID) Equals(other AddressID) bool {
-	return uid == other
+func (aid AddressID) String() string {
+	return fmt.Sprintf("%d", int64(aid))
+}
+
+func (aid AddressID) Equals(other AddressID) bool {
+	return aid.String() == other.String()
 }
 
 func NewAddressID(value int64) (AddressID, error) {
