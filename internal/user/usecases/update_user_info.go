@@ -2,6 +2,7 @@ package useruc
 
 import (
 	"context"
+	"fmt"
 	userent "ifoodish-store/internal/user/domain/entity"
 )
 
@@ -9,5 +10,9 @@ func (s UserUseCases) UpdateUserInfo(
 	ctx context.Context,
 	user userent.RegisteredUser,
 ) (err error) {
-	return s.repo.SaveUser(ctx, user)
+	err = s.repo.SaveUser(ctx, user)
+	if err != nil {
+		return fmt.Errorf("error updating user info: %w", err)
+	}
+	return nil
 }

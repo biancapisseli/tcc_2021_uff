@@ -2,6 +2,7 @@ package useruc
 
 import (
 	"context"
+	"fmt"
 	userent "ifoodish-store/internal/user/domain/entity"
 	uservo "ifoodish-store/internal/user/domain/valueobject"
 )
@@ -11,5 +12,9 @@ func (s UserUseCases) GetUserInfo(
 	userID uservo.UserID,
 	addressID uservo.AddressID,
 ) (userInfo userent.RegisteredUser, err error) {
-	return s.repo.GetUserInfo(ctx, userID)
+	userInfo, err = s.repo.GetUserInfo(ctx, userID)
+	if err != nil {
+		return userInfo, fmt.Errorf("error gettin user info: %w", err)
+	}
+	return userInfo, nil
 }
