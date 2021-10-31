@@ -1,0 +1,1 @@
+package sqlitemigrator_test

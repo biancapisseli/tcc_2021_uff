@@ -1,4 +1,4 @@
-package usersvc
+package useruc
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	uservo "ifoodish-store/internal/user/domain/valueobject"
 )
 
-func (s UserService) AddUserAddress(
+func (s UserUseCases) AddUserAddress(
 	ctx context.Context,
 	userID uservo.UserID,
 	address userent.Address,
