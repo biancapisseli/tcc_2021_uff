@@ -10,6 +10,6 @@ func (pe PasswordEncoded) String() string {
 	return string(pe)
 }
 
-func NewPasswordEncoded(value string) (encodedPassword PasswordEncoded, err error) {
-	return PasswordEncoded(value), nil
+func NewPasswordEncoded(value string) (encodedPassword PasswordEncoded) {
+	return PasswordEncoded(value)
 }

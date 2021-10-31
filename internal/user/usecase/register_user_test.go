@@ -35,8 +35,7 @@ func TestRegisterUserSuccess(t *testing.T) {
 	require.Nil(err)
 
 	// Internal mocked values
-	encodedPassword, err := uservo.NewPasswordEncoded("lalala")
-	require.Nil(err)
+	encodedPassword := uservo.NewPasswordEncoded("lalala")
 
 	// Use case outputs
 	expectedUserID := uservo.GenerateNewUserID()
@@ -148,8 +147,7 @@ func TestRegisterUserAddUserFail(t *testing.T) {
 	require.Nil(err)
 
 	// Internal mocked values
-	encodedPassword, err := uservo.NewPasswordEncoded("lalala")
-	require.Nil(err)
+	encodedPassword := uservo.NewPasswordEncoded("lalala")
 
 	// Use case outputs
 	expectedErr := resperr.WithStatusCode(

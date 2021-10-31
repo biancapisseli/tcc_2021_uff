@@ -32,11 +32,9 @@ func TestChangePasswordSuccess(t *testing.T) {
 	require.Nil(err)
 
 	// Internal mocked values
-	encodedCurrentPassword, err := uservo.NewPasswordEncoded("lalala")
-	require.Nil(err)
+	encodedCurrentPassword := uservo.NewPasswordEncoded("lalala")
 
-	encodedNewPassword, err := uservo.NewPasswordEncoded("lelele")
-	require.Nil(err)
+	encodedNewPassword := uservo.NewPasswordEncoded("lelele")
 
 	user, err := userent.NewUser("lalala", "lala@lala.com", "241234512345")
 	require.Nil(err)
@@ -225,8 +223,7 @@ func TestChangePasswordAuthFail(t *testing.T) {
 	require.Nil(err)
 
 	// Internal mocked values
-	encodedCurrentPassword, err := uservo.NewPasswordEncoded("lalala")
-	require.Nil(err)
+	encodedCurrentPassword := uservo.NewPasswordEncoded("lalala")
 
 	user, err := userent.NewUser("lalala", "lala@lala.com", "241234512345")
 	require.Nil(err)
@@ -286,8 +283,7 @@ func TestChangePasswordEncodeNewPasswordFail(t *testing.T) {
 	require.Nil(err)
 
 	// Internal mocked values
-	encodedCurrentPassword, err := uservo.NewPasswordEncoded("lalala")
-	require.Nil(err)
+	encodedCurrentPassword := uservo.NewPasswordEncoded("lalala")
 
 	user, err := userent.NewUser("lalala", "lala@lala.com", "241234512345")
 	require.Nil(err)
@@ -350,11 +346,9 @@ func TestChangePasswordUpdatePasswordFail(t *testing.T) {
 	require.Nil(err)
 
 	// Internal mocked values
-	encodedCurrentPassword, err := uservo.NewPasswordEncoded("lalala")
-	require.Nil(err)
+	encodedCurrentPassword := uservo.NewPasswordEncoded("lalala")
 
-	encodedNewPassword, err := uservo.NewPasswordEncoded("lelele")
-	require.Nil(err)
+	encodedNewPassword := uservo.NewPasswordEncoded("lelele")
 
 	user, err := userent.NewUser("lalala", "lala@lala.com", "241234512345")
 	require.Nil(err)
