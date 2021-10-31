@@ -25,10 +25,7 @@ func (r UserSQLite3Repository) AddUser(
 		)
 	}
 
-	userID, err = uservo.GenerateNewUserID()
-	if err != nil {
-		return userID, fmt.Errorf("trying to add new user: %w", err)
-	}
+	userID = uservo.GenerateNewUserID()
 
 	newUser := userent.RegisteredUser{
 		User: user,
