@@ -7,7 +7,6 @@ import (
 	"github.com/carlmjohnson/resperr"
 
 	"net/http"
-
 	valid "github.com/asaskevich/govalidator"
 )
 

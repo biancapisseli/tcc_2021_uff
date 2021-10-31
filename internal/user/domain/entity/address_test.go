@@ -2,11 +2,14 @@ package userent_test
 
 import (
 	"encoding/json"
+	"net/http"
 	"strings"
 	"testing"
 
 	userent "ifoodish-store/internal/user/domain/entity"
 	uservo "ifoodish-store/internal/user/domain/valueobject"
+
+	"github.com/carlmjohnson/resperr"
 
 	"github.com/stretchr/testify/require"
 )
@@ -251,5 +254,221 @@ func TestJSONUnmarshallingAddressFail(t *testing.T) {
 	}
 	`), &address)
 	require.ErrorIs(err, uservo.ErrStreetMinLength)
+
+}
+
+//////////////////////////
+
+func TestJSONUnmarshallingRegisteredAddressSuccess(t *testing.T) {
+	require := require.New(t)
+
+	var address userent.RegisteredAddress
+	err := address.UnmarshalJSON([]byte(`
+	{
+		"id":         50,	
+		"Street":     "Street ABCD",
+		"District":   "District",
+		"City":       "City",
+		"State":      "State",
+		"Complement": "Complement",
+		"Number":     "11111",
+		"Zipcode":    "23970000",
+		"Latitude":   "-23.307577",
+		"Longitude":  "-44.754146"
+	}
+	`))
+	require.Nil(err)
+	require.True(address.ID.Equals(50))
+	require.True(address.Street.Equals("Street ABCD"))
+	require.True(address.District.Equals("District"))
+	require.True(address.City.Equals("City"))
+	require.True(address.State.Equals("State"))
+	require.True(address.Complement.Equals("Complement"))
+	require.True(address.Number.Equals("11111"))
+	require.True(address.Zipcode.Equals("23970000"))
+	require.True(address.Latitude.Equals("-23.307577"))
+	require.True(address.Longitude.Equals("-44.754146"))
+}
+
+func TestJSONUnmarshallingRegisteredAddressFail(t *testing.T) {
+	require := require.New(t)
+	var address userent.RegisteredAddress
+
+	// forçando teste do unmarshal
+	err := address.UnmarshalJSON([]byte(`
+		{
+			"id":         50,	
+			"Street":     "Street ABCD",
+			"District":   "District",
+			"City":       "City",
+			"State":      "State",
+			"Complement": "Complement",
+			"Number":     "11111",
+			"Zipcode":    "23970000",
+			"Latitude":   "-23.307577",
+			"Longitude":  "-44.754146
+		}
+	`))
+	require.Equal(http.StatusInternalServerError, resperr.StatusCode(err))
+
+	err = json.Unmarshal([]byte(`
+	{
+		"id":         -1,
+		"Street":     "Street ABC",
+		"District":   "District",
+		"City":       "City",
+		"State":      "State",
+		"Complement": "Complement",
+		"Number":     "11111",
+		"Zipcode":    "23970000",
+		"Latitude":   "-23.307577",
+		"Longitude":  "-44.754146"
+	}
+	`), &address)
+	require.ErrorIs(err, uservo.ErrInvalidAddressID)
+
+	err = json.Unmarshal([]byte(`
+	{
+		"id":         50,
+		"Street":     "",
+		"District":   "District",
+		"City":       "City",
+		"State":      "State",
+		"Complement": "Complement",
+		"Number":     "11111",
+		"Zipcode":    "23970000",
+		"Latitude":   "-23.307577",
+		"Longitude":  "-44.754146"
+	}
+	`), &address)
+	require.ErrorIs(err, uservo.ErrStreetMinLength)
+
+	err = json.Unmarshal([]byte(`
+	{
+		"id":         50,
+		"Street":     "Street ABC",
+		"District":   "",
+		"City":       "City",
+		"State":      "State",
+		"Complement": "Complement",
+		"Number":     "11111",
+		"Zipcode":    "23970000",
+		"Latitude":   "-23.307577",
+		"Longitude":  "-44.754146"
+	}
+	`), &address)
+	require.ErrorIs(err, uservo.ErrDistrictMinLength)
+
+	err = json.Unmarshal([]byte(`
+	{
+		"id":         50,
+		"Street":     "Street ABC",
+		"District":   "District",
+		"City":       "",
+		"State":      "State",
+		"Complement": "Complement",
+		"Number":     "11111",
+		"Zipcode":    "23970000",
+		"Latitude":   "-23.307577",
+		"Longitude":  "-44.754146"
+	}
+	`), &address)
+	require.ErrorIs(err, uservo.ErrCityMinLength)
+
+	err = json.Unmarshal([]byte(`
+	{
+		"id":         50,
+		"Street":     "Street ABC",
+		"District":   "District",
+		"City":       "City",
+		"State":      "",
+		"Complement": "Complement",
+		"Number":     "11111",
+		"Zipcode":    "23970000",
+		"Latitude":   "-23.307577",
+		"Longitude":  "-44.754146"
+	}
+	`), &address)
+	require.ErrorIs(err, uservo.ErrStateMinLength)
+
+	err = json.Unmarshal([]byte(`
+	{
+		"id":         50,
+		"Street":     "Street ABC",
+		"District":   "District",
+		"City":       "City",
+		"State":      "State",
+		"Complement": "Complement",
+		"Number":     "",
+		"Zipcode":    "23970000",
+		"Latitude":   "-23.307577",
+		"Longitude":  "-44.754146"
+	}
+	`), &address)
+	require.ErrorIs(err, uservo.ErrAddressNumberMinLength)
+
+	err = json.Unmarshal([]byte(`
+	{
+		"id":         50,
+		"Street":     "Street ABC",
+		"District":   "District",
+		"City":       "City",
+		"State":      "State",
+		"Complement": "Complement",
+		"Number":     "11111",
+		"Zipcode":    "zipcodee",
+		"Latitude":   "-23.307577",
+		"Longitude":  "-44.754146"
+	}
+	`), &address)
+	require.ErrorIs(err, uservo.ErrZipcodeNotNumeric)
+
+	err = json.Unmarshal([]byte(`
+	{
+		"id":         50,
+		"Street":     "Street ABC",
+		"District":   "District",
+		"City":       "City",
+		"State":      "State",
+		"Complement": "Complement",
+		"Number":     "11111",
+		"Zipcode":    "23970000",
+		"Latitude":   "",
+		"Longitude":  "-44.754146"
+	}
+	`), &address)
+	require.ErrorIs(err, uservo.ErrLatitudeInvalidFormat)
+
+	err = json.Unmarshal([]byte(`
+	{
+		"id":         50,
+		"Street":     "Street ABC",
+		"District":   "District",
+		"City":       "City",
+		"State":      "State",
+		"Complement": "Complement",
+		"Number":     "11111",
+		"Zipcode":    "23970000",
+		"Latitude":   "-23.307577",
+		"Longitude":  ""
+	}
+	`), &address)
+	require.ErrorIs(err, uservo.ErrLongitudeInvalidFormat)
+
+	err = json.Unmarshal([]byte(`
+	{
+		"id":         "",
+		"Street":     "Street ABC",
+		"District":   "District",
+		"City":       "City",
+		"State":      "State",
+		"Complement": "Complement",
+		"Number":     "11111",
+		"Zipcode":    "23970000",
+		"Latitude":   "-23.307577",
+		"Longitude":  "-44.754146"
+	}
+	`), &address)
+	require.Equal(http.StatusBadRequest, resperr.StatusCode(err))
 
 }

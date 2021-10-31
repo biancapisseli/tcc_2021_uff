@@ -7,6 +7,6 @@ import (
 )
 
 func TestAddUserAddressSuccess(t *testing.T) {
-	require := require.New(t)
+	_ = require.New(t)
 
 }

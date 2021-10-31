@@ -2,7 +2,6 @@ package uservo
 
 import (
 	"testing"
-
 	"github.com/stretchr/testify/require"
 )
 

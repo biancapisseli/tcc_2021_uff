@@ -43,6 +43,5 @@ func NewAddressNumber(value string) (AddressNumber, error) {
 			fmt.Sprintf("o número do endereço deve ter no máximo %d caracteres", MaxAddressNumberLength),
 		)
 	}
-
 	return AddressNumber(value), nil
 }

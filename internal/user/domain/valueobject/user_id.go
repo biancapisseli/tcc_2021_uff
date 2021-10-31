@@ -24,7 +24,7 @@ func NewUserID(value string) (UserID, error) {
 	userUUID, err := uuid.Parse(value)
 	if err != nil || userUUID == uuid.Nil {
 		return UserID(uuid.Nil), resperr.WithCodeAndMessage(
-			err,
+			fmt.Errorf("user id should be in valid UUID format: %w", err),
 			http.StatusBadRequest,
 			"o ID do usuário deve estar no formato de UUID",
 		)
@@ -33,14 +33,6 @@ func NewUserID(value string) (UserID, error) {
 	return UserID(userUUID), nil
 }
 
-func GenerateNewUserID() (userID UserID, err error) {
-	userUUID, err := uuid.NewRandom()
-	if err != nil {
-		return userID, resperr.WithStatusCode(
-			fmt.Errorf("error generating new user id: %w", err),
-			http.StatusInternalServerError,
-		)
-	}
-
-	return UserID(userUUID), nil
+func GenerateNewUserID() (userID UserID) {
+	return UserID(uuid.New())
 }
