@@ -4,11 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 	uservo "ifoodish-store/internal/user/domain/valueobject"
+	"ifoodish-store/pkg/resperr"
+	"net/http"
+
+	"github.com/google/uuid"
 )
 
 type RegisteredUser struct {
-	User
 	ID uservo.UserID `json:"id"`
+	User
 }
 
 type User struct {
@@ -52,7 +56,10 @@ func (u *User) UnmarshalJSON(data []byte) error {
 	var userClone clone
 
 	if err := json.Unmarshal(data, &userClone); err != nil {
-		return fmt.Errorf("error unmarshalling user: %w", err)
+		return resperr.WithStatusCode(
+			fmt.Errorf("error unmarshalling user: %w", err),
+			http.StatusBadRequest,
+		)
 	}
 
 	newUser, err := NewUser(User(userClone))
@@ -66,18 +73,30 @@ func (u *User) UnmarshalJSON(data []byte) error {
 
 func (u *RegisteredUser) UnmarshalJSON(data []byte) error {
 
-	type clone RegisteredUser
-	var userClone clone
-
-	if err := json.Unmarshal(data, &userClone); err != nil {
+	var user User
+	if err := json.Unmarshal(data, &user); err != nil {
 		return fmt.Errorf("error unmarshalling registered user: %w", err)
 	}
 
-	newUser, err := NewRegisteredUser(RegisteredUser(userClone))
+	var registered struct {
+		UserID uuid.UUID `json:"id"`
+	}
+
+	if err := json.Unmarshal(data, &registered); err != nil {
+		return resperr.WithStatusCode(
+			fmt.Errorf("error unmarshalling registered user: %w", err),
+			http.StatusBadRequest,
+		)
+	}
+
+	newRegisteredUser, err := NewRegisteredUser(RegisteredUser{
+		ID:   uservo.UserID(registered.UserID),
+		User: user,
+	})
 	if err != nil {
 		return fmt.Errorf("error unmarshalling registered user: %w", err)
 	}
 
-	*u = newUser
+	*u = newRegisteredUser
 	return nil
 }

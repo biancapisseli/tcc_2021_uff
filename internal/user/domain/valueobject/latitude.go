@@ -3,7 +3,6 @@ package uservo
 import (
 	"errors"
 	"ifoodish-store/pkg/resperr"
-
 	"net/http"
 
 	valid "github.com/asaskevich/govalidator"

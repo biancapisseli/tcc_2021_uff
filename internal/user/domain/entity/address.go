@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	uservo "ifoodish-store/internal/user/domain/valueobject"
+	"ifoodish-store/pkg/resperr"
+	"net/http"
 )
 
 type RegisteredAddress struct {
@@ -124,18 +126,30 @@ func (a *Address) UnmarshalJSON(data []byte) error {
 
 func (u *RegisteredAddress) UnmarshalJSON(data []byte) error {
 
-	type clone RegisteredAddress
-	var userClone clone
-
-	if err := json.Unmarshal(data, &userClone); err != nil {
+	var address Address
+	if err := json.Unmarshal(data, &address); err != nil {
 		return fmt.Errorf("error unmarshalling registered address: %w", err)
 	}
 
-	newAddress, err := NewRegisteredAddress(RegisteredAddress(userClone))
+	var registered struct {
+		AddressID uservo.AddressID `json:"id"`
+	}
+
+	if err := json.Unmarshal(data, &registered); err != nil {
+		return resperr.WithStatusCode(
+			fmt.Errorf("error unmarshalling registered address: %w", err),
+			http.StatusBadRequest,
+		)
+	}
+
+	newRegisteredAddress, err := NewRegisteredAddress(RegisteredAddress{
+		ID:      uservo.AddressID(registered.AddressID),
+		Address: address,
+	})
 	if err != nil {
 		return fmt.Errorf("error unmarshalling registered address: %w", err)
 	}
 
-	*u = newAddress
+	*u = newRegisteredAddress
 	return nil
 }

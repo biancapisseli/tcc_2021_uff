@@ -97,9 +97,8 @@ func TestUserInvalid(t *testing.T) {
 	})
 
 	for _, it := range users {
-		newUser, err := userent.NewUser(it.user)
+		_, err := userent.NewUser(it.user)
 		require.ErrorIs(err, it.err)
-		require.Nil(newUser)
 	}
 
 }
@@ -133,7 +132,7 @@ func TestRegisteredUserInvalid(t *testing.T) {
 
 }
 
-func TestJSONUnmarshallingSuccess(t *testing.T) {
+func TestJSONUnmarshallingUserSuccess(t *testing.T) {
 	require := require.New(t)
 
 	var user *userent.User
@@ -150,7 +149,7 @@ func TestJSONUnmarshallingSuccess(t *testing.T) {
 	require.True(user.Phone.Equals("24999999999"))
 }
 
-func TestJSONUnmarshallingFail(t *testing.T) {
+func TestJSONUnmarshallingUserFail(t *testing.T) {
 	require := require.New(t)
 	var user *userent.User
 
@@ -195,3 +194,101 @@ func TestJSONUnmarshallingFail(t *testing.T) {
 	require.ErrorIs(err, uservo.ErrPhoneMinLength)
 
 }
+
+///////////////////////////////////////////////
+func TestJSONUnmarshallingRegisteredUserSuccess(t *testing.T) {
+	require := require.New(t)
+
+	var registeredUser userent.RegisteredUser
+	err := registeredUser.UnmarshalJSON([]byte(`
+	{
+		"id":"123e4567-e89b-12d3-a456-426614174000",
+		"name":"Matheus Zabin",
+		"email":"lalal@lala.com",
+		"phone":"24999999999"
+	}
+	`))
+	require.Nil(err)
+	require.True(registeredUser.ID.Equals(uservo.UserID(uuid.MustParse("123e4567-e89b-12d3-a456-426614174000"))))
+	require.True(registeredUser.Name.Equals("Matheus Zabin"))
+	require.True(registeredUser.Email.Equals("lalal@lala.com"))
+	require.True(registeredUser.Phone.Equals("24999999999"))
+}
+
+func TestJSONUnmarshallingRegisteredUserFail(t *testing.T) {
+	require := require.New(t)
+	var registeredUser userent.RegisteredUser
+
+	// forçando teste do unmarshal
+	err := registeredUser.UnmarshalJSON([]byte(`
+		{
+			"id":"123e4567-e89b-12d3-a456-426614174000",
+			"name":"Matheus Zabin",
+			"email":"lalal@lala.com
+			"phone":"249999224073"
+		}
+	`))
+	require.Equal(http.StatusInternalServerError, resperr.StatusCode(err))
+
+	err = json.Unmarshal([]byte(`
+		{
+			"id":"123e4567-e89b-12d3-a456-426614174000",
+			"name":"Aa",
+			"email":"lalal@lala.com",
+			"phone":"249999224073"
+		}
+	`), &registeredUser)
+	require.ErrorIs(err, uservo.ErrUserNameMinLength)
+
+	err = json.Unmarshal([]byte(`
+		{
+			"id":"123e4567-e89b-12d3-a456-426614174000",
+			"name":"Matheus Zabin",
+			"email":"emailInvalido",
+			"phone":"24999999999"
+		}
+	`), &registeredUser)
+	require.ErrorIs(err, uservo.ErrEmailInvalidFormat)
+
+	err = json.Unmarshal([]byte(`
+		{
+			"id":"123e4567-e89b-12d3-a456-426614174000",
+			"name":"Matheus Zabin",
+			"email":"lalal@lala.com",
+			"phone":"249993"
+		}
+	`), &registeredUser)
+	require.ErrorIs(err, uservo.ErrPhoneMinLength)
+
+	err = json.Unmarshal([]byte(`
+		{
+			"id":"macarrao",
+			"name":"Matheus Zabin",
+			"email":"lalal@lala.com",
+			"phone":"24999999999"
+		}
+	`), &registeredUser)
+	require.Equal(http.StatusBadRequest, resperr.StatusCode(err))
+
+	err = json.Unmarshal([]byte(`
+		{
+			"id": 10.24,
+			"name":"Matheus Zabin",
+			"email":"lalal@lala.com",
+			"phone":"24999999999"
+		}
+	`), &registeredUser)
+	require.Equal(http.StatusBadRequest, resperr.StatusCode(err))
+
+	err = json.Unmarshal([]byte(`
+		{
+			"id": "00000000-0000-0000-0000-000000000000",
+			"name":"Matheus Zabin",
+			"email":"lalal@lala.com",
+			"phone":"24999999999"
+		}
+	`), &registeredUser)
+	require.Equal(http.StatusBadRequest, resperr.StatusCode(err))
+
+}
+

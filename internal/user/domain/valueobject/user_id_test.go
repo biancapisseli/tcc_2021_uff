@@ -25,6 +25,12 @@ func TestUserIDValid(t *testing.T) {
 	id, err := NewUserID("123e4567-e89b-12d3-a456-426614174000")
 	require.Nil(err)
 	require.Equal("123e4567-e89b-12d3-a456-426614174000", id.String())
+
+	genaratedId := GenerateNewUserID()
+	id, err = NewUserID(genaratedId.String())
+	require.Nil(err)
+	require.Equal(genaratedId, id)
+
 }
 
 func TestUserIDString(t *testing.T) {
