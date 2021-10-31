@@ -7,8 +7,6 @@ import (
 	"net/http"
 
 	"github.com/carlmjohnson/resperr"
-
-	"github.com/google/uuid"
 )
 
 type RegisteredUser struct {
@@ -22,29 +20,25 @@ type User struct {
 	Phone uservo.Phone    `json:"phone"`
 }
 
-func NewRegisteredUser(params RegisteredUser) (newUser RegisteredUser, err error) {
-	newUser.User, err = NewUser(params.User)
-	if err != nil {
-		return newUser, fmt.Errorf("error creating new registered user: %w", err)
-	}
-
-	newUser.ID, err = uservo.NewUserID(params.ID.String())
+func NewRegisteredUser(id string, user User) (newUser RegisteredUser, err error) {
+	newUser.ID, err = uservo.NewUserID(id)
 	if err != nil {
 		return newUser, fmt.Errorf("error creating new registered user id: %w", err)
 	}
+	newUser.User = user
 	return newUser, nil
 }
 
-func NewUser(params User) (newUser User, err error) {
-	newUser.Name, err = uservo.NewUserName(string(params.Name))
+func NewUser(name, email, phone string) (newUser User, err error) {
+	newUser.Name, err = uservo.NewUserName(name)
 	if err != nil {
 		return newUser, fmt.Errorf("error creating new user name: %w", err)
 	}
-	newUser.Email, err = uservo.NewEmail(string(params.Email))
+	newUser.Email, err = uservo.NewEmail(email)
 	if err != nil {
 		return newUser, fmt.Errorf("error creating new user email: %w", err)
 	}
-	newUser.Phone, err = uservo.NewPhone(string(params.Phone))
+	newUser.Phone, err = uservo.NewPhone(phone)
 	if err != nil {
 		return newUser, fmt.Errorf("error creating new user phone: %w", err)
 	}
@@ -63,7 +57,11 @@ func (u *User) UnmarshalJSON(data []byte) error {
 		)
 	}
 
-	newUser, err := NewUser(User(userClone))
+	newUser, err := NewUser(
+		userClone.Name.String(),
+		userClone.Email.String(),
+		userClone.Phone.String(),
+	)
 	if err != nil {
 		return fmt.Errorf("error unmarshalling user: %w", err)
 	}
@@ -80,9 +78,8 @@ func (u *RegisteredUser) UnmarshalJSON(data []byte) error {
 	}
 
 	var registered struct {
-		UserID uuid.UUID `json:"id"`
+		UserID string `json:"id"`
 	}
-
 	if err := json.Unmarshal(data, &registered); err != nil {
 		return resperr.WithStatusCode(
 			fmt.Errorf("error unmarshalling registered user: %w", err),
@@ -90,10 +87,7 @@ func (u *RegisteredUser) UnmarshalJSON(data []byte) error {
 		)
 	}
 
-	newRegisteredUser, err := NewRegisteredUser(RegisteredUser{
-		ID:   uservo.UserID(registered.UserID),
-		User: user,
-	})
+	newRegisteredUser, err := NewRegisteredUser(registered.UserID, user)
 	if err != nil {
 		return fmt.Errorf("error unmarshalling registered user: %w", err)
 	}

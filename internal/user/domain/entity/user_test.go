@@ -19,118 +19,131 @@ const (
 	EMAIL_HOSTMAME = "@example.com"
 )
 
+type userTestCase struct {
+	name  string
+	email string
+	phone string
+
+	expectedErr error
+}
+
 var (
-	validUser = userent.User{
-		Name:  "João da Silva",
-		Email: uservo.Email(strings.Repeat("a", uservo.MaxEmailLength-len(EMAIL_HOSTMAME)) + EMAIL_HOSTMAME),
-		Phone: "24999999999",
+	validUserTestCase = userTestCase{
+		name:  "João da Silva",
+		email: strings.Repeat("a", uservo.MaxEmailLength-len(EMAIL_HOSTMAME)) + EMAIL_HOSTMAME,
+		phone: "24999999999",
 	}
 )
+
+func userTestCaseCompare(
+	require *require.Assertions,
+	user userent.User,
+	tc userTestCase,
+) {
+	require.Equal(tc.name, user.Name.String())
+	require.Equal(tc.email, user.Email.String())
+	require.Equal(tc.phone, user.Phone.String())
+}
 
 func TestUserValid(t *testing.T) {
 	require := require.New(t)
 
-	user, err := userent.NewUser(validUser)
+	user, err := userent.NewUser(
+		validUserTestCase.name,
+		validUserTestCase.email,
+		validUserTestCase.phone,
+	)
 	require.Nil(err)
-	require.NotEmpty(user)
+	userTestCaseCompare(require, user, validUserTestCase)
 }
 
 func TestUserInvalid(t *testing.T) {
 	require := require.New(t)
 
-	type testIterator struct {
-		user userent.User
-		err  error
+	users := []userTestCase{{
+		name:  "João 123",
+		email: validUserTestCase.email,
+		phone: validUserTestCase.phone,
+
+		expectedErr: uservo.ErrUserNameInvalidCharacter,
+	}, {
+		name:  strings.Repeat("a", uservo.MaxUserNameLength+1),
+		email: validUserTestCase.email,
+		phone: validUserTestCase.phone,
+
+		expectedErr: uservo.ErrUserNameMaxLength,
+	}, {
+		name:  strings.Repeat("a", uservo.MinUserNameLength-1),
+		email: validUserTestCase.email,
+		phone: validUserTestCase.phone,
+
+		expectedErr: uservo.ErrUserNameMinLength,
+	}, {
+		name:  validUserTestCase.name,
+		email: "João123",
+		phone: validUserTestCase.phone,
+
+		expectedErr: uservo.ErrEmailInvalidFormat,
+	}, {
+		name:  validUserTestCase.name,
+		email: strings.Repeat("a", uservo.MaxEmailLength) + EMAIL_HOSTMAME,
+		phone: validUserTestCase.phone,
+
+		expectedErr: uservo.ErrEmailMaxLength,
+	}, {
+		name:  validUserTestCase.name,
+		email: validUserTestCase.email,
+		phone: strings.Repeat("9", uservo.MaxPhoneLength+1),
+
+		expectedErr: uservo.ErrPhoneMaxLength,
+	}, {
+		name:  validUserTestCase.name,
+		email: validUserTestCase.email,
+		phone: strings.Repeat("a", uservo.MinPhoneLength-1),
+
+		expectedErr: uservo.ErrPhoneMinLength,
+	}}
+
+	for i, it := range users {
+		_, err := userent.NewUser(
+			it.name,
+			it.email,
+			it.phone,
+		)
+		require.ErrorIs(err, it.expectedErr, "index %d", i)
 	}
-
-	users := []testIterator{}
-
-	//Name
-	example := validUser
-	example.Name = uservo.UserName("João 123")
-	users = append(users, testIterator{
-		user: example,
-		err:  uservo.ErrUserNameInvalidCharacter,
-	})
-
-	example = validUser
-	example.Name = uservo.UserName(strings.Repeat("a", uservo.MaxUserNameLength+1))
-	users = append(users, testIterator{
-		user: example,
-		err:  uservo.ErrUserNameMaxLength,
-	})
-
-	example = validUser
-	example.Name = uservo.UserName(strings.Repeat("a", uservo.MinUserNameLength-1))
-	users = append(users, testIterator{
-		user: example,
-		err:  uservo.ErrUserNameMinLength,
-	})
-
-	//Email
-	example = validUser
-	example.Email = uservo.Email("João123")
-	users = append(users, testIterator{
-		user: example,
-		err:  uservo.ErrEmailInvalidFormat,
-	})
-
-	example = validUser
-	example.Email = uservo.Email(strings.Repeat("a", uservo.MaxEmailLength) + EMAIL_HOSTMAME)
-	users = append(users, testIterator{
-		user: example,
-		err:  uservo.ErrEmailMaxLength,
-	})
-
-	//Phone
-	example = validUser
-	example.Phone = uservo.Phone(strings.Repeat("9", uservo.MaxPhoneLength+1))
-	users = append(users, testIterator{
-		user: example,
-		err:  uservo.ErrPhoneMaxLength,
-	})
-
-	example = validUser
-	example.Phone = uservo.Phone(strings.Repeat("a", uservo.MinPhoneLength-1))
-	users = append(users, testIterator{
-		user: example,
-		err:  uservo.ErrPhoneMinLength,
-	})
-
-	for _, it := range users {
-		_, err := userent.NewUser(it.user)
-		require.ErrorIs(err, it.err)
-	}
-
 }
 
 func TestRegisteredUserValid(t *testing.T) {
 	require := require.New(t)
 
-	ex := userent.RegisteredUser{}
-	ex.User = validUser
-	ex.ID = uservo.UserID(uuid.New())
-
-	user, err := userent.NewRegisteredUser(ex)
+	user, err := userent.NewUser(
+		validUserTestCase.name,
+		validUserTestCase.email,
+		validUserTestCase.phone,
+	)
 	require.Nil(err)
-	require.NotEmpty(user)
 
+	userUUID := uuid.New().String()
+
+	regUser, err := userent.NewRegisteredUser(userUUID, user)
+	require.Nil(err)
+	userTestCaseCompare(require, regUser.User, validUserTestCase)
+	require.Equal(userUUID, regUser.ID.String())
 }
 
 func TestRegisteredUserInvalid(t *testing.T) {
 	require := require.New(t)
 
-	ex := userent.RegisteredUser{}
-	ex.User = validUser
+	user, err := userent.NewUser(
+		validUserTestCase.name,
+		validUserTestCase.email,
+		validUserTestCase.phone,
+	)
+	require.Nil(err)
 
-	ex.ID = uservo.UserID([16]byte{0, 0})
-	_, err := userent.NewRegisteredUser(ex)
+	_, err = userent.NewRegisteredUser(uuid.Nil.String(), user)
 	require.Equal(http.StatusBadRequest, resperr.StatusCode(err))
-
-	ex.Name = uservo.UserName(strings.Repeat("a", uservo.MinUserNameLength-1))
-	_, err = userent.NewRegisteredUser(ex)
-	require.ErrorIs(err, uservo.ErrUserNameMinLength)
-
 }
 
 func TestJSONUnmarshallingUserSuccess(t *testing.T) {
@@ -292,4 +305,3 @@ func TestJSONUnmarshallingRegisteredUserFail(t *testing.T) {
 	require.Equal(http.StatusBadRequest, resperr.StatusCode(err))
 
 }
-
