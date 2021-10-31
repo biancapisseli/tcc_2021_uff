@@ -38,13 +38,7 @@ func ParseJWT(parentCtx context.Context, secret, rawToken string) (jwtCtx contex
 		)
 	}
 
-	expectedSignature, err := getSignature(secret, components[1])
-	if err != nil {
-		return parentCtx, resperr.WithStatusCode(
-			fmt.Errorf("fail creating JWT: %w", err),
-			http.StatusInternalServerError,
-		)
-	}
+	expectedSignature := getSignature(secret, components[1])
 
 	if components[2] != expectedSignature {
 		return parentCtx, resperr.WithStatusCode(
@@ -128,13 +122,7 @@ func CreateJWT(secret string, userID uservo.UserID) (token string, err error) {
 
 	payload := b64.StdEncoding.EncodeToString(rawPayload)
 
-	signature, err := getSignature(secret, payload)
-	if err != nil {
-		return "", resperr.WithStatusCode(
-			fmt.Errorf("fail creating JWT: %w", err),
-			http.StatusInternalServerError,
-		)
-	}
+	signature := getSignature(secret, payload)
 
 	return fmt.Sprintf(
 		"%s.%s.%s",
