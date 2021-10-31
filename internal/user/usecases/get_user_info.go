@@ -1,4 +1,4 @@
-package usersvc
+package useruc
 
 import (
 	"context"
@@ -6,10 +6,10 @@ import (
 	uservo "ifoodish-store/internal/user/domain/valueobject"
 )
 
-func (s UserService) GetUserAddress(
+func (s UserUseCases) GetUserInfo(
 	ctx context.Context,
 	userID uservo.UserID,
 	addressID uservo.AddressID,
-) (address userent.RegisteredAddress, err error) {
-	return s.repo.GetUserAddress(ctx, userID, addressID)
+) (userInfo userent.RegisteredUser, err error) {
+	return s.repo.GetUserInfo(ctx, userID)
 }

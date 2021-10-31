@@ -1,4 +1,4 @@
-package usersvc
+package useruc
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-func (s UserService) RegisterUser(
+func (s UserUseCases) RegisterUser(
 	ctx context.Context,
 	user userent.User,
 	password uservo.PasswordRaw,

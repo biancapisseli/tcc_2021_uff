@@ -31,6 +31,14 @@ func NewUserID(value string) (UserID, error) {
 	return UserID(userUUID), nil
 }
 
-func GenerateNewUserID() UserID {
-	return UserID(uuid.New())
+func GenerateNewUserID() (userID UserID, err error) {
+	userUUID, err := uuid.NewRandom()
+	if err != nil {
+		return userID, resperr.WithStatusCode(
+			fmt.Errorf("error generating new user id: %w", err),
+			http.StatusInternalServerError,
+		)
+	}
+
+	return UserID(userUUID), nil
 }

@@ -1,11 +1,11 @@
-package usersvc
+package useruc
 
 import (
 	"context"
 	uservo "ifoodish-store/internal/user/domain/valueobject"
 )
 
-func (s UserService) RemoveUserAddress(
+func (s UserUseCases) RemoveUserAddress(
 	ctx context.Context,
 	userID uservo.UserID,
 	addressID uservo.AddressID,
