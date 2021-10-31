@@ -7,8 +7,9 @@ import (
 	"net/http"
 
 	uservo "ifoodish-store/internal/user/domain/valueobject"
-	"ifoodish-store/pkg/resperr"
 	"ifoodish-store/pkg/sqlxtx"
+
+	"github.com/carlmjohnson/resperr"
 )
 
 func (r UserSQLite3Repository) UpdatePassword(

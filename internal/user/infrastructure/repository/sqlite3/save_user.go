@@ -5,9 +5,10 @@ import (
 	"errors"
 	"fmt"
 	userent "ifoodish-store/internal/user/domain/entity"
-	"ifoodish-store/pkg/resperr"
 	"ifoodish-store/pkg/sqlxtx"
 	"net/http"
+
+	"github.com/carlmjohnson/resperr"
 )
 
 func (r UserSQLite3Repository) SaveUser(

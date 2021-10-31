@@ -1,7 +1,7 @@
 package uservo
 
 import (
-	"ifoodish-store/pkg/resperr"
+	"github.com/carlmjohnson/resperr"
 
 	"net/http"
 	"testing"

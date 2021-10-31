@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	userent "ifoodish-store/internal/user/domain/entity"
 	uservo "ifoodish-store/internal/user/domain/valueobject"
-	"ifoodish-store/pkg/resperr"
+
+	"github.com/carlmjohnson/resperr"
 
 	"net/http"
 	"strings"

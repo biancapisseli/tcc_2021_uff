@@ -7,7 +7,8 @@ import (
 	"net/http"
 
 	uservo "ifoodish-store/internal/user/domain/valueobject"
-	"ifoodish-store/pkg/resperr"
+
+	"github.com/carlmjohnson/resperr"
 )
 
 func (s UserUseCases) ChangePassword(

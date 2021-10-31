@@ -1,7 +1,7 @@
 package userhttpechoctl
 
 import (
-	userctlint "ifoodish-store/internal/user/infrastructure/controller/interfaces"
+	userctlint "ifoodish-store/internal/user/infrastructure/controller/interface"
 	"ifoodish-store/pkg/middleware"
 
 	"github.com/labstack/echo/v4"

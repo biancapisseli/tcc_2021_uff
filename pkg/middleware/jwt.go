@@ -4,9 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"ifoodish-store/pkg/jwt"
-	"ifoodish-store/pkg/resperr"
 	"net/http"
 	"strings"
+
+	"github.com/carlmjohnson/resperr"
 
 	"github.com/labstack/echo/v4"
 )

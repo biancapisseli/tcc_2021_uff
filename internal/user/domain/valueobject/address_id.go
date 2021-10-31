@@ -2,7 +2,8 @@ package uservo
 
 import (
 	"errors"
-	"ifoodish-store/pkg/resperr"
+
+	"github.com/carlmjohnson/resperr"
 
 	"net/http"
 )

@@ -4,8 +4,9 @@ import (
 	"fmt"
 	uservo "ifoodish-store/internal/user/domain/valueobject"
 	"ifoodish-store/pkg/jwt"
-	"ifoodish-store/pkg/resperr"
 	"net/http"
+
+	"github.com/carlmjohnson/resperr"
 
 	"github.com/labstack/echo/v4"
 )

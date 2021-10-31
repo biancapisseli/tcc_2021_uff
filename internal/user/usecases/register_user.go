@@ -6,8 +6,9 @@ import (
 	"fmt"
 	userent "ifoodish-store/internal/user/domain/entity"
 	uservo "ifoodish-store/internal/user/domain/valueobject"
-	"ifoodish-store/pkg/resperr"
 	"net/http"
+
+	"github.com/carlmjohnson/resperr"
 )
 
 func (s UserUseCases) RegisterUser(

@@ -7,10 +7,11 @@ import (
 	"errors"
 	"fmt"
 	uservo "ifoodish-store/internal/user/domain/valueobject"
-	"ifoodish-store/pkg/resperr"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/carlmjohnson/resperr"
 )
 
 type jwt struct {
