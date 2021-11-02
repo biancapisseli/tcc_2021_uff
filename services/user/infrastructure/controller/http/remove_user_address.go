@@ -18,7 +18,7 @@ func (c UserHTTPController) RemoveUserAddress(req Request) (err error) {
 	var uri struct {
 		AddressID int64 `url:"address_id"`
 	}
-	if err := req.ParsePathParams(&uri); err != nil {
+	if err := req.ParseURLParams(&uri); err != nil {
 		return resperr.WithCodeAndMessage(
 			fmt.Errorf("failed binding request uri: %w", err),
 			http.StatusBadRequest,

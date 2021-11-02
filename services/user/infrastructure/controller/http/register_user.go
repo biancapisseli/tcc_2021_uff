@@ -17,7 +17,7 @@ func (c UserHTTPController) RegisterUser(req Request) (
 		PasswordConfirm passwordRawClone `json:"password_confirm"`
 	}
 
-	if err := req.ParseBodyParams(&body); err != nil {
+	if err := req.ParseBody(&body); err != nil {
 		return userID, fmt.Errorf("failed binding request body: %w", err)
 	}
 

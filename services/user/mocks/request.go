@@ -68,8 +68,8 @@ func (_m *Request) GetUserID() (uservo.UserID, error) {
 	return r0, r1
 }
 
-// ParseBodyParams provides a mock function with given fields: dest
-func (_m *Request) ParseBodyParams(dest interface{}) error {
+// ParseBody provides a mock function with given fields: dest
+func (_m *Request) ParseBody(dest interface{}) error {
 	ret := _m.Called(dest)
 
 	var r0 error
@@ -82,8 +82,8 @@ func (_m *Request) ParseBodyParams(dest interface{}) error {
 	return r0
 }
 
-// ParsePathParams provides a mock function with given fields: dest
-func (_m *Request) ParsePathParams(dest interface{}) error {
+// ParseURLParams provides a mock function with given fields: dest
+func (_m *Request) ParseURLParams(dest interface{}) error {
 	ret := _m.Called(dest)
 
 	var r0 error

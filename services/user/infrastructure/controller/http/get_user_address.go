@@ -24,7 +24,7 @@ func (c UserHTTPController) GetUserAddress(req Request) (
 		AddressID addressIDClone `url:"address_id"`
 	}
 
-	if err := req.ParsePathParams(&uri); err != nil {
+	if err := req.ParseURLParams(&uri); err != nil {
 		return address, resperr.WithCodeAndMessage(
 			fmt.Errorf("failed binding request uri: %w", err),
 			http.StatusBadRequest,

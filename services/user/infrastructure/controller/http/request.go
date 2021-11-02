@@ -8,7 +8,7 @@ import (
 type Request interface {
 	GetUserID() (userID uservo.UserID, err error)
 	GetHeader(header string) (value string)
-	ParsePathParams(dest interface{}) (err error)
-	ParseBodyParams(dest interface{}) (err error)
+	ParseURLParams(dest interface{}) (err error)
+	ParseBody(dest interface{}) (err error)
 	Context() context.Context
 }

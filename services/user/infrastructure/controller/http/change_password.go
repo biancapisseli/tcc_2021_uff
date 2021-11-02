@@ -52,7 +52,7 @@ func (c UserHTTPController) ChangePassword(req Request) (err error) {
 	}
 
 	var body ChangePasswordBody
-	if err := req.ParseBodyParams(&body); err != nil {
+	if err := req.ParseBody(&body); err != nil {
 		return fmt.Errorf("failed to bind request body: %w", err)
 	}
 

@@ -17,7 +17,7 @@ func (c UserHTTPController) AddUserAddress(req Request) (
 	}
 
 	var body userent.Address
-	if err := req.ParseBodyParams(&body); err != nil {
+	if err := req.ParseBody(&body); err != nil {
 		return addressID, fmt.Errorf("failed binding request body: %w", err)
 	}
 

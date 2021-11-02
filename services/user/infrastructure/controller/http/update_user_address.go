@@ -13,7 +13,7 @@ func (c UserHTTPController) UpdateUserAddress(req Request) (err error) {
 	}
 
 	var body userent.RegisteredAddress
-	if err := req.ParseBodyParams(&body); err != nil {
+	if err := req.ParseBody(&body); err != nil {
 		return fmt.Errorf("failed binding request body: %w", err)
 	}
 
