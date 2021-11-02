@@ -34,7 +34,7 @@ func TestInvalidEmail(t *testing.T) {
 func TestValidEmail(t *testing.T) {
 	require := require.New(t)
 
-	email, err := NewEmail((strings.Repeat("a", MaxEmailLength-len(EMAIL_HOSTMAME)) + EMAIL_HOSTMAME))
+	email, err := NewEmail(strings.Repeat("a", MaxEmailLength-len(EMAIL_HOSTMAME)) + EMAIL_HOSTMAME)
 	require.Nil(err)
 
 	require.NotEmpty(email)
