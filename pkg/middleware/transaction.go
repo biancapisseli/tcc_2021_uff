@@ -4,16 +4,15 @@ import (
 	"fmt"
 	"ifoodish-store/pkg/sqlxtx"
 
-	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 )
 
 type TransactionMiddleware struct {
-	conn *sqlx.DB
+	conn sqlxtx.Transactioner
 }
 
-func NewTransactionMiddleware(conn *sqlx.DB) TransactionMiddleware {
+func NewTransactionMiddleware(conn sqlxtx.Transactioner) TransactionMiddleware {
 	return TransactionMiddleware{
 		conn: conn,
 	}

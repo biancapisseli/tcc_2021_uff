@@ -2,19 +2,35 @@ package sqlxtx
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"fmt"
 	"net/http"
 
 	"github.com/carlmjohnson/resperr"
-
-	"github.com/jmoiron/sqlx"
 )
+
+type Transaction interface {
+	NamedExec(query string, arg interface{}) (sql.Result, error)
+	Select(dest interface{}, query string, args ...interface{}) error
+	Get(dest interface{}, query string, args ...interface{}) error
+	Exec(query string, args ...interface{}) (sql.Result, error)
+}
+
+type TransactionFinisher interface {
+	Transaction
+	Commit() (err error)
+	Rollback() (err error)
+}
+
+type Transactioner interface {
+	BeginTransaction() (tx TransactionFinisher, err error)
+}
 
 type transactionKey struct{}
 
-func BeginTransaction(db *sqlx.DB, ctx context.Context) (context.Context, error) {
-	tx, err := db.Beginx()
+func BeginTransaction(db Transactioner, ctx context.Context) (context.Context, error) {
+	tx, err := db.BeginTransaction()
 	if err != nil {
 		return ctx, resperr.WithStatusCode(
 			fmt.Errorf("error trying to begin a transaction: %w", err),
@@ -25,7 +41,7 @@ func BeginTransaction(db *sqlx.DB, ctx context.Context) (context.Context, error)
 	return context.WithValue(ctx, transactionKey{}, tx), nil
 }
 
-func GetTransaction(ctx context.Context) (*sqlx.Tx, error) {
+func getTransactionFinisher(ctx context.Context) (TransactionFinisher, error) {
 	interfaceValue := ctx.Value(transactionKey{})
 	if interfaceValue == nil {
 		return nil, resperr.WithStatusCode(
@@ -34,7 +50,7 @@ func GetTransaction(ctx context.Context) (*sqlx.Tx, error) {
 		)
 	}
 
-	tx, ok := interfaceValue.(*sqlx.Tx)
+	tx, ok := interfaceValue.(TransactionFinisher)
 	if !ok {
 		return nil, resperr.WithStatusCode(
 			errors.New("transaction with incorrect type"),
@@ -45,8 +61,12 @@ func GetTransaction(ctx context.Context) (*sqlx.Tx, error) {
 	return tx, nil
 }
 
+func GetTransaction(ctx context.Context) (Transaction, error) {
+	return getTransactionFinisher(ctx)
+}
+
 func CommitTransaction(ctx context.Context) error {
-	tx, err := GetTransaction(ctx)
+	tx, err := getTransactionFinisher(ctx)
 	if err != nil {
 		return fmt.Errorf("error trying to commit transaction: %w", err)
 
@@ -64,7 +84,7 @@ func CommitTransaction(ctx context.Context) error {
 }
 
 func RollbackTransaction(ctx context.Context) error {
-	tx, err := GetTransaction(ctx)
+	tx, err := getTransactionFinisher(ctx)
 	if err != nil {
 		return resperr.WithStatusCode(
 			fmt.Errorf("error trying to rollback transaction: %w", err),
