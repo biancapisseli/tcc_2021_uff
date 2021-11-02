@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	uservo "ifoodish-store/internal/user/domain/valueobject"
+	uservo "ifoodish-store/services/user/domain/valueobject"
 	"net/http"
 	"strings"
 	"time"
@@ -88,7 +88,7 @@ func ParseJWT(parentCtx context.Context, secret, rawToken string) (jwtCtx contex
 
 func GetUserID(ctx context.Context) (userID uservo.UserID, err error) {
 	intfcValue := ctx.Value(jwtContextKey{})
-	if err != nil {
+	if intfcValue == nil {
 		return userID, resperr.WithStatusCode(
 			errors.New("jwt not found on context"),
 			http.StatusUnauthorized,
