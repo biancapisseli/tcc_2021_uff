@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"testing"
 
+	"ifoodish-store/mocks"
 	uservo "ifoodish-store/services/user/domain/valueobject"
-	"ifoodish-store/services/user/mocks"
 	useruc "ifoodish-store/services/user/usecase"
 
 	"github.com/carlmjohnson/resperr"

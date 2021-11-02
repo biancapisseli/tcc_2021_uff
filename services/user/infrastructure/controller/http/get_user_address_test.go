@@ -6,9 +6,9 @@ import (
 	userent "ifoodish-store/services/user/domain/entity"
 	"net/http"
 
+	"ifoodish-store/mocks"
 	uservo "ifoodish-store/services/user/domain/valueobject"
 	userhttpcontroller "ifoodish-store/services/user/infrastructure/controller/http"
-	"ifoodish-store/services/user/mocks"
 	"testing"
 
 	"github.com/carlmjohnson/resperr"

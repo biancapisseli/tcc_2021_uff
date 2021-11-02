@@ -3,6 +3,4 @@ test/services:
 test/pkg:
 	go test `go list ./pkg/... | grep -v mocks` -cover
 mocks:
-	cd ./services/user
-	mockery --dir ./services/user --output ./services/user/mocks --all --case snake
-	cd ..
+	mockery --dir ./ --output ./mocks --all --case snake

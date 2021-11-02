@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"ifoodish-store/mocks"
 	uservo "ifoodish-store/services/user/domain/valueobject"
 	userhttpcontroller "ifoodish-store/services/user/infrastructure/controller/http"
-	"ifoodish-store/services/user/mocks"
 	"strings"
 	"testing"
 
