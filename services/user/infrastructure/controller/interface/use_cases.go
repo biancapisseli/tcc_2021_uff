@@ -59,6 +59,7 @@ type UserUseCases interface {
 
 	UpdateUserInfo(
 		ctx context.Context,
-		user userent.RegisteredUser,
+		userID uservo.UserID,
+		user userent.User,
 	) (err error)
 }

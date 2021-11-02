@@ -17,12 +17,7 @@ func (c UserHTTPController) UpdateUserInfo(req Request) (err error) {
 		return fmt.Errorf("failed binding request body: %w", err)
 	}
 
-	user, err := userent.NewRegisteredUser(userID.String(), body)
-	if err != nil {
-		return fmt.Errorf("invalid user: %w", err)
-	}
-
-	if err := c.useCases.UpdateUserInfo(req.Context(), user); err != nil {
+	if err := c.useCases.UpdateUserInfo(req.Context(), userID, body); err != nil {
 		return fmt.Errorf("failed use case: %w", err)
 	}
 

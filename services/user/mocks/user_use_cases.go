@@ -170,13 +170,13 @@ func (_m *UserUseCases) UpdateUserAddress(ctx context.Context, userID uservo.Use
 	return r0
 }
 
-// UpdateUserInfo provides a mock function with given fields: ctx, user
-func (_m *UserUseCases) UpdateUserInfo(ctx context.Context, user userent.RegisteredUser) error {
-	ret := _m.Called(ctx, user)
+// UpdateUserInfo provides a mock function with given fields: ctx, userID, user
+func (_m *UserUseCases) UpdateUserInfo(ctx context.Context, userID uservo.UserID, user userent.User) error {
+	ret := _m.Called(ctx, userID, user)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, userent.RegisteredUser) error); ok {
-		r0 = rf(ctx, user)
+	if rf, ok := ret.Get(0).(func(context.Context, uservo.UserID, userent.User) error); ok {
+		r0 = rf(ctx, userID, user)
 	} else {
 		r0 = ret.Error(0)
 	}

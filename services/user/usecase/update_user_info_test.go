@@ -30,19 +30,16 @@ func TestUpdateUserInfoSuccess(t *testing.T) {
 	)
 	require.Nil(err)
 
-	registeredUser, err := userent.NewRegisteredUser(userID.String(), user)
-	require.Nil(err)
-
 	repo := &mocks.UserRepository{}
 	repo.
-		On("SaveUser", ctx, registeredUser).
+		On("SaveUser", ctx, userID, user).
 		Return(nil)
 
 	encoder := &mocks.PasswordEncoder{}
 
 	useCases := useruc.New(repo, encoder)
 
-	err = useCases.UpdateUserInfo(ctx, registeredUser)
+	err = useCases.UpdateUserInfo(ctx, userID, user)
 	require.Nil(err)
 }
 
@@ -61,9 +58,6 @@ func TestUpdateUserInfoFail(t *testing.T) {
 	)
 	require.Nil(err)
 
-	registeredUser, err := userent.NewRegisteredUser(userID.String(), user)
-	require.Nil(err)
-
 	// Use case outputs
 	expectedErr := resperr.WithStatusCode(
 		errors.New("test error"),
@@ -72,13 +66,13 @@ func TestUpdateUserInfoFail(t *testing.T) {
 
 	repo := &mocks.UserRepository{}
 	repo.
-		On("SaveUser", ctx, registeredUser).
+		On("SaveUser", ctx, userID, user).
 		Return(expectedErr)
 
 	encoder := &mocks.PasswordEncoder{}
 
 	useCases := useruc.New(repo, encoder)
 
-	err = useCases.UpdateUserInfo(ctx, registeredUser)
+	err = useCases.UpdateUserInfo(ctx, userID, user)
 	require.ErrorIs(err, expectedErr)
 }

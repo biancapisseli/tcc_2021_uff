@@ -11,7 +11,7 @@ type UserRepository interface {
 
 	GetUserInfo(ctx context.Context, userID uservo.UserID) (user userent.RegisteredUser, err error)
 	AddUser(ctx context.Context, user userent.User, password uservo.PasswordEncoded) (userID uservo.UserID, err error)
-	SaveUser(ctx context.Context, user userent.RegisteredUser) (err error)
+	SaveUser(ctx context.Context, userID uservo.UserID, user userent.User) (err error)
 	RemoveUser(ctx context.Context, userID uservo.UserID) (err error)
 	UpdatePassword(ctx context.Context, userID uservo.UserID, newPassword uservo.PasswordEncoded) (err error)
 
