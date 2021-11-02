@@ -37,7 +37,12 @@ func TestGetUserAddressesSuccess(t *testing.T) {
 	)
 	require.Nil(err)
 
-	expectedRegisteredAddress, err := userent.NewRegisteredAddress(1, expectedAddress)
+	expectedAddressID := uservo.GenerateNewAddressID()
+
+	expectedRegisteredAddress, err := userent.NewRegisteredAddress(
+		expectedAddressID.String(),
+		expectedAddress,
+	)
 	require.Nil(err)
 
 	repo := &mocks.UserRepository{}

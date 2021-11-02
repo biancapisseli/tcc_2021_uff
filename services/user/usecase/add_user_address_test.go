@@ -37,8 +37,7 @@ func TestAddUserAddressSuccess(t *testing.T) {
 	require.Nil(err)
 
 	// Use case outputs
-	expectedAddressID, err := uservo.NewAddressID(1)
-	require.Nil(err)
+	expectedAddressID := uservo.GenerateNewAddressID()
 
 	repo := &mocks.UserRepository{}
 	repo.
@@ -85,7 +84,7 @@ func TestAddUserAddressFail(t *testing.T) {
 	repo.
 		On("AddUserAddress", ctx, userID, address).
 		Return(
-			uservo.AddressID(-1),
+			uservo.GenerateNewAddressID(),
 			expectedErr,
 		)
 

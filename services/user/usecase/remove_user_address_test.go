@@ -22,8 +22,7 @@ func TestRemoveUserAddressSuccess(t *testing.T) {
 
 	userID := uservo.GenerateNewUserID()
 
-	addressID, err := uservo.NewAddressID(1)
-	require.Nil(err)
+	addressID := uservo.GenerateNewAddressID()
 
 	repo := &mocks.UserRepository{}
 	repo.
@@ -34,7 +33,7 @@ func TestRemoveUserAddressSuccess(t *testing.T) {
 
 	useCases := useruc.New(repo, encoder)
 
-	err = useCases.RemoveUserAddress(ctx, userID, addressID)
+	err := useCases.RemoveUserAddress(ctx, userID, addressID)
 	require.Nil(err)
 }
 
@@ -46,8 +45,7 @@ func TestRemoveUserAddressFail(t *testing.T) {
 
 	userID := uservo.GenerateNewUserID()
 
-	addressID, err := uservo.NewAddressID(1)
-	require.Nil(err)
+	addressID := uservo.GenerateNewAddressID()
 
 	// Use case outputs
 	expectedErr := resperr.WithStatusCode(
@@ -64,6 +62,6 @@ func TestRemoveUserAddressFail(t *testing.T) {
 
 	useCases := useruc.New(repo, encoder)
 
-	err = useCases.RemoveUserAddress(ctx, userID, addressID)
+	err := useCases.RemoveUserAddress(ctx, userID, addressID)
 	require.ErrorIs(err, expectedErr)
 }

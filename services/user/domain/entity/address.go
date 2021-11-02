@@ -26,7 +26,7 @@ type Address struct {
 	Longitude  uservo.Longitude     `json:"longitude"`
 }
 
-func NewRegisteredAddress(id int64, address Address) (newAddress RegisteredAddress, err error) {
+func NewRegisteredAddress(id string, address Address) (newAddress RegisteredAddress, err error) {
 	newAddress.ID, err = uservo.NewAddressID(id)
 	if err != nil {
 		return newAddress, fmt.Errorf("error creating new registered address id: %w", err)
@@ -142,7 +142,7 @@ func (u *RegisteredAddress) UnmarshalJSON(data []byte) error {
 	}
 
 	var registered struct {
-		AddressID int64 `json:"id"`
+		AddressID string `json:"id"`
 	}
 
 	if err := json.Unmarshal(data, &registered); err != nil {

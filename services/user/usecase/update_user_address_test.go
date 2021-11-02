@@ -36,7 +36,12 @@ func TestUpdateUserAddressSuccess(t *testing.T) {
 	)
 	require.Nil(err)
 
-	registeredAddress, err := userent.NewRegisteredAddress(1, address)
+	addressID := uservo.GenerateNewAddressID()
+
+	registeredAddress, err := userent.NewRegisteredAddress(
+		addressID.String(),
+		address,
+	)
 	require.Nil(err)
 
 	repo := &mocks.UserRepository{}
@@ -73,7 +78,12 @@ func TestUpdateUserAddressFail(t *testing.T) {
 	)
 	require.Nil(err)
 
-	registeredAddress, err := userent.NewRegisteredAddress(1, address)
+	addressID := uservo.GenerateNewAddressID()
+
+	registeredAddress, err := userent.NewRegisteredAddress(
+		addressID.String(),
+		address,
+	)
 	require.Nil(err)
 
 	// Use case outputs

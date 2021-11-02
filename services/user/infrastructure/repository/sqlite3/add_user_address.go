@@ -16,53 +16,48 @@ func (r UserSQLite3Repository) AddUserAddress(
 	ctx context.Context,
 	userID uservo.UserID,
 	address userent.Address,
-) (addresID uservo.AddressID, err error) {
+) (addressID uservo.AddressID, err error) {
 
 	tx, err := sqlxtx.GetTransaction(ctx)
 	if err != nil {
-		return 0, fmt.Errorf(
+		return addressID, fmt.Errorf(
 			"trying to get transaction to add new user address to sqlite3 db: %w",
 			err,
 		)
 	}
 
+	addressID = uservo.GenerateNewAddressID()
+
 	toAdd := struct {
 		userent.Address
-		UserID uservo.UserID `json:"user_id"`
-	}{address, userID}
+		AddressID uservo.AddressID `json:"address_id"`
+		UserID    uservo.UserID    `json:"user_id"`
+	}{address, addressID, userID}
 
-	result, err := tx.NamedExec(
+	if _, err = tx.NamedExec(
 		`INSERT INTO address(
-			street, district, city, state,
+			id, street, district, city, state,
 			complement, number, zipcode, user_id,
 			latitude, longitude
 		) VALUES (
-			:street, :district, :city, :state,
+			:address_id, :street, :district, :city, :state,
 			:complement, :number, :zipcode, :user_id,
 			:latitude, :longitude
 		)`,
 		toAdd,
-	)
-	if err != nil {
+	); err != nil {
 		if sqlite3.IsForeignKeyErr(err) {
-			return 0, resperr.WithCodeAndMessage(
+			return addressID, resperr.WithCodeAndMessage(
 				fmt.Errorf("trying to add new user address to sqlite3 db: %w", err),
 				http.StatusNotFound,
 				"Usuário não encontrado",
 			)
 		}
-		return 0, resperr.WithStatusCode(
+		return addressID, resperr.WithStatusCode(
 			fmt.Errorf("trying to add new user address to sqlite3 db: %w", err),
 			http.StatusInternalServerError,
 		)
 	}
-	insertedID, err := result.LastInsertId()
-	if err != nil {
-		return 0, resperr.WithStatusCode(
-			fmt.Errorf("trying to get new user address inserted ID: %w", err),
-			http.StatusInternalServerError,
-		)
-	}
 
-	return uservo.AddressID(insertedID), nil
+	return addressID, nil
 }

@@ -10,6 +10,7 @@ import (
 	uservo "ifoodish-store/services/user/domain/valueobject"
 
 	"github.com/carlmjohnson/resperr"
+	"github.com/google/uuid"
 
 	"github.com/stretchr/testify/require"
 )
@@ -30,7 +31,7 @@ type addressTestCase struct {
 
 type registeredAddressTestCase struct {
 	addressTestCase
-	id int64
+	id string
 }
 
 var (
@@ -279,10 +280,12 @@ func TestRegisteredAddressValid(t *testing.T) {
 	require.Nil(err)
 	addressTestCaseCompare(require, address, validAddressTestCase)
 
-	regAddress, err := userent.NewRegisteredAddress(50, address)
+	addressID := uservo.GenerateNewAddressID()
+
+	regAddress, err := userent.NewRegisteredAddress(addressID.String(), address)
 	require.Nil(err)
 	addressTestCaseCompare(require, regAddress.Address, validAddressTestCase)
-	require.Equal("50", regAddress.ID.String())
+	require.True(regAddress.ID.Equals(addressID))
 }
 
 func TestRegisteredAddressInvalidID(t *testing.T) {
@@ -290,10 +293,10 @@ func TestRegisteredAddressInvalidID(t *testing.T) {
 
 	for _, it := range []registeredAddressTestCase{{
 		addressTestCase: validAddressTestCase,
-		id:              0,
+		id:              "123e4567-e89b-12d3-a456-4266141740",
 	}, {
 		addressTestCase: validAddressTestCase,
-		id:              -10,
+		id:              "",
 	}} {
 		address, err := userent.NewAddress(
 			it.street, it.district, it.city, it.state, it.complement,
@@ -303,7 +306,7 @@ func TestRegisteredAddressInvalidID(t *testing.T) {
 		addressTestCaseCompare(require, address, validAddressTestCase)
 
 		_, err = userent.NewRegisteredAddress(it.id, address)
-		require.ErrorIs(err, uservo.ErrInvalidAddressID)
+		require.Equal(resperr.StatusCode(err), http.StatusBadRequest)
 	}
 }
 
@@ -382,7 +385,7 @@ func TestJSONUnmarshallingRegisteredAddressSuccess(t *testing.T) {
 	var address userent.RegisteredAddress
 	err := address.UnmarshalJSON([]byte(`
 	{
-		"id":         50,	
+		"id":         "123e4567-e89b-12d3-a456-426614174000",	
 		"Street":     "Street ABCD",
 		"District":   "District",
 		"City":       "City",
@@ -395,7 +398,7 @@ func TestJSONUnmarshallingRegisteredAddressSuccess(t *testing.T) {
 	}
 	`))
 	require.Nil(err)
-	require.True(address.ID.Equals(50))
+	require.True(address.ID.Equals(uservo.AddressID(uuid.MustParse("123e4567-e89b-12d3-a456-426614174000"))))
 	require.True(address.Street.Equals("Street ABCD"))
 	require.True(address.District.Equals("District"))
 	require.True(address.City.Equals("City"))
@@ -442,7 +445,7 @@ func TestJSONUnmarshallingRegisteredAddressFail(t *testing.T) {
 		"Longitude":  "-44.754146"
 	}
 	`), &address)
-	require.ErrorIs(err, uservo.ErrInvalidAddressID)
+	require.Equal(resperr.StatusCode(err), http.StatusBadRequest)
 
 	err = json.Unmarshal([]byte(`
 	{

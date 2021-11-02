@@ -23,8 +23,7 @@ func TestGetUserAddressSuccess(t *testing.T) {
 
 	userID := uservo.GenerateNewUserID()
 
-	addressID, err := uservo.NewAddressID(1)
-	require.Nil(err)
+	addressID := uservo.GenerateNewAddressID()
 
 	// Use case outputs
 	expectedAddress, err := userent.NewAddress(
@@ -40,7 +39,12 @@ func TestGetUserAddressSuccess(t *testing.T) {
 	)
 	require.Nil(err)
 
-	expectedRegisteredAddress, err := userent.NewRegisteredAddress(1, expectedAddress)
+	expectedAddressID := uservo.GenerateNewAddressID()
+
+	expectedRegisteredAddress, err := userent.NewRegisteredAddress(
+		expectedAddressID.String(),
+		expectedAddress,
+	)
 	require.Nil(err)
 
 	repo := &mocks.UserRepository{}
@@ -65,8 +69,7 @@ func TestGetUserAddressFail(t *testing.T) {
 
 	userID := uservo.GenerateNewUserID()
 
-	addressID, err := uservo.NewAddressID(1)
-	require.Nil(err)
+	addressID := uservo.GenerateNewAddressID()
 
 	// Use case outputs
 	expectedErr := resperr.WithStatusCode(
@@ -86,6 +89,6 @@ func TestGetUserAddressFail(t *testing.T) {
 
 	useCases := useruc.New(repo, encoder)
 
-	_, err = useCases.GetUserAddress(ctx, userID, addressID)
+	_, err := useCases.GetUserAddress(ctx, userID, addressID)
 	require.ErrorIs(err, expectedErr)
 }

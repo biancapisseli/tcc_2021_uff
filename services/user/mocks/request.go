@@ -45,6 +45,20 @@ func (_m *Request) GetHeader(header string) string {
 	return r0
 }
 
+// GetURLParam provides a mock function with given fields: name
+func (_m *Request) GetURLParam(name string) string {
+	ret := _m.Called(name)
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func(string) string); ok {
+		r0 = rf(name)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
 // GetUserID provides a mock function with given fields:
 func (_m *Request) GetUserID() (uservo.UserID, error) {
 	ret := _m.Called()
@@ -70,20 +84,6 @@ func (_m *Request) GetUserID() (uservo.UserID, error) {
 
 // ParseBody provides a mock function with given fields: dest
 func (_m *Request) ParseBody(dest interface{}) error {
-	ret := _m.Called(dest)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(interface{}) error); ok {
-		r0 = rf(dest)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// ParseURLParams provides a mock function with given fields: dest
-func (_m *Request) ParseURLParams(dest interface{}) error {
 	ret := _m.Called(dest)
 
 	var r0 error

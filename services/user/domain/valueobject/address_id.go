@@ -1,35 +1,36 @@
 package uservo
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/carlmjohnson/resperr"
+	"github.com/google/uuid"
 
 	"net/http"
 )
 
-var (
-	ErrInvalidAddressID = errors.New("address ID should be numeric and > 0")
-)
-
-type AddressID int64
+type AddressID uuid.UUID
 
 func (aid AddressID) String() string {
-	return fmt.Sprintf("%d", int64(aid))
+	return uuid.UUID(aid).String()
 }
 
 func (aid AddressID) Equals(other AddressID) bool {
-	return aid.String() == other.String()
+	return uuid.UUID(aid).String() == uuid.UUID(other).String()
 }
 
-func NewAddressID(value int64) (AddressID, error) {
-	if value <= int64(0) {
-		return AddressID(0), resperr.WithCodeAndMessage(
-			ErrInvalidAddressID,
+func NewAddressID(value string) (AddressID, error) {
+	addressUUID, err := uuid.Parse(value)
+	if err != nil || addressUUID == uuid.Nil {
+		return AddressID(uuid.Nil), resperr.WithCodeAndMessage(
+			fmt.Errorf("address id should be in valid UUID format: %w", err),
 			http.StatusBadRequest,
-			"o ID do endereço deve ser maior que zero",
+			"o ID do endereço deve estar no formato de UUID",
 		)
 	}
-	return AddressID(value), nil
+	return AddressID(addressUUID), nil
+}
+
+func GenerateNewAddressID() (addressID AddressID) {
+	return AddressID(uuid.New())
 }

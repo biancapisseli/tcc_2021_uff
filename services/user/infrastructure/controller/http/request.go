@@ -6,9 +6,9 @@ import (
 )
 
 type Request interface {
+	GetURLParam(name string) (value string)
 	GetUserID() (userID uservo.UserID, err error)
 	GetHeader(header string) (value string)
-	ParseURLParams(dest interface{}) (err error)
 	ParseBody(dest interface{}) (err error)
 	Context() context.Context
 }

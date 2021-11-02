@@ -33,14 +33,13 @@ func TestAddUserAddressSuccess(t *testing.T) {
 	)
 	require.Nil(err)
 
-	expectedAddressID, err := uservo.NewAddressID(1)
-	require.Nil(err)
+	expectedAddressID := uservo.GenerateNewAddressID()
 
 	useCases := &mocks.UserUseCases{}
 	useCases.On("AddUserAddress", ctx, userID, address).Return(expectedAddressID, nil)
 
 	req := &mocks.Request{}
-	req.On("ParseBodyParams",
+	req.On("ParseBody",
 		mock.AnythingOfType("*userent.Address"),
 	).Return(nil).Run(func(args mock.Arguments) {
 		argAddress := args.Get(0).(*userent.Address)
@@ -81,7 +80,7 @@ func TestAddUserAddressParseBodyFail(t *testing.T) {
 
 	req := &mocks.Request{}
 	req.On("GetUserID").Return(uservo.GenerateNewUserID(), nil)
-	req.On("ParseBodyParams",
+	req.On("ParseBody",
 		mock.AnythingOfType("*userent.Address"),
 	).Return(expectedErr)
 
@@ -111,13 +110,17 @@ func TestAddUserAddressUseCaseFail(t *testing.T) {
 	)
 	require.Nil(err)
 
+	addressID := uservo.GenerateNewAddressID()
+
 	expectedErr := errors.New("test error")
 
 	useCases := &mocks.UserUseCases{}
-	useCases.On("AddUserAddress", ctx, userID, address).Return(uservo.AddressID(-1), expectedErr)
+	useCases.
+		On("AddUserAddress", ctx, userID, address).
+		Return(addressID, expectedErr)
 
 	req := &mocks.Request{}
-	req.On("ParseBodyParams",
+	req.On("ParseBody",
 		mock.AnythingOfType("*userent.Address"),
 	).Return(nil).Run(func(args mock.Arguments) {
 		argAddress := args.Get(0).(*userent.Address)

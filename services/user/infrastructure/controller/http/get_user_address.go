@@ -4,9 +4,6 @@ import (
 	"fmt"
 	userent "ifoodish-store/services/user/domain/entity"
 	uservo "ifoodish-store/services/user/domain/valueobject"
-	"net/http"
-
-	"github.com/carlmjohnson/resperr"
 )
 
 func (c UserHTTPController) GetUserAddress(req Request) (
@@ -19,20 +16,7 @@ func (c UserHTTPController) GetUserAddress(req Request) (
 		return address, fmt.Errorf("failed to get user id: %w", err)
 	}
 
-	type addressIDClone uservo.AddressID
-	var uri struct {
-		AddressID addressIDClone `url:"address_id"`
-	}
-
-	if err := req.ParseURLParams(&uri); err != nil {
-		return address, resperr.WithCodeAndMessage(
-			fmt.Errorf("failed binding request uri: %w", err),
-			http.StatusBadRequest,
-			"os parametros da URL estão incorretos",
-		)
-	}
-
-	addressID, err := uservo.NewAddressID(int64(uri.AddressID))
+	addressID, err := uservo.NewAddressID(req.GetURLParam("address_id"))
 	if err != nil {
 		return address, fmt.Errorf("invalid address id: %w", err)
 	}

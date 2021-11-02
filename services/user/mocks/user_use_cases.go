@@ -25,7 +25,9 @@ func (_m *UserUseCases) AddUserAddress(ctx context.Context, userID uservo.UserID
 	if rf, ok := ret.Get(0).(func(context.Context, uservo.UserID, userent.Address) uservo.AddressID); ok {
 		r0 = rf(ctx, userID, address)
 	} else {
-		r0 = ret.Get(0).(uservo.AddressID)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(uservo.AddressID)
+		}
 	}
 
 	var r1 error

@@ -46,7 +46,7 @@ func TestChangePasswordSuccess(t *testing.T) {
 	).Return(nil)
 
 	req := &mocks.Request{}
-	req.On("ParseBodyParams",
+	req.On("ParseBody",
 		mock.AnythingOfType("*userhttpcontroller.ChangePasswordBody"),
 	).Return(nil).Run(func(args mock.Arguments) {
 		argBody := args.Get(0).(*userhttpcontroller.ChangePasswordBody)
@@ -86,7 +86,7 @@ func TestChangePasswordParseBodyFail(t *testing.T) {
 
 	req := &mocks.Request{}
 	req.On("GetUserID").Return(uservo.GenerateNewUserID(), nil)
-	req.On("ParseBodyParams",
+	req.On("ParseBody",
 		mock.AnythingOfType("*userhttpcontroller.ChangePasswordBody"),
 	).Return(expectedErr)
 
@@ -130,7 +130,7 @@ func TestChangePasswordUseCaseFail(t *testing.T) {
 	).Return(expectedErr)
 
 	req := &mocks.Request{}
-	req.On("ParseBodyParams",
+	req.On("ParseBody",
 		mock.AnythingOfType("*userhttpcontroller.ChangePasswordBody"),
 	).Return(nil).Run(func(args mock.Arguments) {
 		argBody := args.Get(0).(*userhttpcontroller.ChangePasswordBody)
