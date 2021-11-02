@@ -2,8 +2,9 @@ package userreposqlite3
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 	"fmt"
-	"ifoodish-store/pkg/sqlite3"
 	"ifoodish-store/pkg/sqlxtx"
 	userent "ifoodish-store/services/user/domain/entity"
 	uservo "ifoodish-store/services/user/domain/valueobject"
@@ -35,7 +36,7 @@ func (r UserSQLite3Repository) GetUserAddress(
 		userID,
 		addressID,
 	); err != nil {
-		if sqlite3.IsErrNoRows(err) {
+		if errors.Is(err, sql.ErrNoRows) {
 			return address, resperr.WithCodeAndMessage(
 				fmt.Errorf("trying to get user info from sqlite3: %w", err),
 				http.StatusNotFound,

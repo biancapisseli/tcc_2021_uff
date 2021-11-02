@@ -27,7 +27,7 @@ func (r UserSQLite3Repository) UpdatePassword(
 
 	result, err := tx.Exec(
 		"UPDATE user SET password=$1 WHERE id=$2",
-		newPassword.String(),
+		newPassword,
 		userID,
 	)
 	if err != nil {

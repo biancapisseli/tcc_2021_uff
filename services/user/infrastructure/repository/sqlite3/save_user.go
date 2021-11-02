@@ -25,9 +25,16 @@ func (r UserSQLite3Repository) SaveUser(
 		)
 	}
 
+	toUpdate := struct {
+		userent.User
+		UserID uservo.UserID `json:"user_id"`
+	}{
+		User:   user,
+		UserID: userID,
+	}
 	results, err := tx.NamedExec(
-		"UPDATE user SET name=:name, phone=:phone WHERE id=:id",
-		user,
+		"UPDATE user SET name=:name, phone=:phone WHERE id=:user_id",
+		toUpdate,
 	)
 	if err != nil {
 		return resperr.WithStatusCode(

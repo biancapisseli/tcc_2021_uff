@@ -2,7 +2,6 @@ package sqlxtx
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"fmt"
 	"net/http"
@@ -10,22 +9,10 @@ import (
 	"github.com/carlmjohnson/resperr"
 )
 
-type Transaction interface {
-	NamedExec(query string, arg interface{}) (sql.Result, error)
-	Select(dest interface{}, query string, args ...interface{}) error
-	Get(dest interface{}, query string, args ...interface{}) error
-	Exec(query string, args ...interface{}) (sql.Result, error)
-}
-
-type TransactionFinisher interface {
-	Transaction
-	Commit() (err error)
-	Rollback() (err error)
-}
-
-type Transactioner interface {
-	BeginTransaction() (tx TransactionFinisher, err error)
-}
+var (
+	ErrTransactionNotFound      = errors.New("transaction not found on context")
+	ErrTransactionIncorrectType = errors.New("transaction found with incorrect type")
+)
 
 type transactionKey struct{}
 
@@ -45,7 +32,7 @@ func getTransactionFinisher(ctx context.Context) (TransactionFinisher, error) {
 	interfaceValue := ctx.Value(transactionKey{})
 	if interfaceValue == nil {
 		return nil, resperr.WithStatusCode(
-			errors.New("transaction doesn't exists"),
+			ErrTransactionNotFound,
 			http.StatusInternalServerError,
 		)
 	}
@@ -53,7 +40,7 @@ func getTransactionFinisher(ctx context.Context) (TransactionFinisher, error) {
 	tx, ok := interfaceValue.(TransactionFinisher)
 	if !ok {
 		return nil, resperr.WithStatusCode(
-			errors.New("transaction with incorrect type"),
+			ErrTransactionIncorrectType,
 			http.StatusInternalServerError,
 		)
 	}

@@ -2,14 +2,15 @@ package userreposqlite3
 
 import (
 	"context"
+	"errors"
 	"fmt"
-	"ifoodish-store/pkg/sqlite3"
 	"ifoodish-store/pkg/sqlxtx"
 	userent "ifoodish-store/services/user/domain/entity"
 	uservo "ifoodish-store/services/user/domain/valueobject"
 	"net/http"
 
 	"github.com/carlmjohnson/resperr"
+	"github.com/mattn/go-sqlite3"
 )
 
 func (r UserSQLite3Repository) AddUser(
@@ -28,19 +29,24 @@ func (r UserSQLite3Repository) AddUser(
 
 	userID = uservo.GenerateNewUserID()
 
-	newUser := userent.RegisteredUser{
-		User: user,
-		ID:   userID,
+	toAdd := struct {
+		userent.User
+		UserID   uservo.UserID          `json:"user_id"`
+		Password uservo.PasswordEncoded `json:"password"`
+	}{
+		User:     user,
+		UserID:   userID,
+		Password: password,
 	}
 	if _, err := tx.NamedExec(
 		`INSERT INTO user(
 			id, email, name, password, phone
 		) VALUES (
-			:id, :email, :name, :password, :phone
+			:user_id, :email, :name, :password, :phone
 		)`,
-		newUser,
+		toAdd,
 	); err != nil {
-		if sqlite3.IsUniqueErr(err) {
+		if errors.Is(err, sqlite3.ErrConstraintUnique) {
 			return userID, resperr.WithCodeAndMessage(
 				fmt.Errorf("adding new user to sqlite3 db: %w", err),
 				http.StatusConflict,

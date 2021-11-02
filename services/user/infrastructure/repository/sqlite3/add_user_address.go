@@ -2,14 +2,15 @@ package userreposqlite3
 
 import (
 	"context"
+	"errors"
 	"fmt"
-	"ifoodish-store/pkg/sqlite3"
 	"ifoodish-store/pkg/sqlxtx"
 	userent "ifoodish-store/services/user/domain/entity"
 	uservo "ifoodish-store/services/user/domain/valueobject"
 	"net/http"
 
 	"github.com/carlmjohnson/resperr"
+	"github.com/mattn/go-sqlite3"
 )
 
 func (r UserSQLite3Repository) AddUserAddress(
@@ -46,7 +47,7 @@ func (r UserSQLite3Repository) AddUserAddress(
 		)`,
 		toAdd,
 	); err != nil {
-		if sqlite3.IsForeignKeyErr(err) {
+		if errors.Is(err, sqlite3.ErrConstraintForeignKey) {
 			return addressID, resperr.WithCodeAndMessage(
 				fmt.Errorf("trying to add new user address to sqlite3 db: %w", err),
 				http.StatusNotFound,
